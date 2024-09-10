@@ -46,8 +46,4 @@ public boolean Joinprocess(UserDTO dto) {
 	
 	return true;
 }
-
-
-
-	
 }

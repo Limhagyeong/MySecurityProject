@@ -33,6 +33,7 @@ public class SecurityConfiguration {
 		 http
          .formLogin((auth) -> auth.loginPage("/api/login") 
                  .loginProcessingUrl("/loginProcess") 
+                 .defaultSuccessUrl("/api", true)
                  .permitAll() 
          ); 
 		 

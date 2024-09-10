@@ -5,11 +5,14 @@ import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails{
+	
+	UsernamePasswordAuthenticationFilter up=new UsernamePasswordAuthenticationFilter();
 	
 	private final UserDTO dto;
 
@@ -40,5 +43,6 @@ public class CustomUserDetails implements UserDetails{
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return dto.getUsername();
+		
 	}
 }
