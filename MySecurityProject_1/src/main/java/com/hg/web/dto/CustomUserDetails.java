@@ -9,12 +9,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+
 public class CustomUserDetails implements UserDetails{
 	
 	UsernamePasswordAuthenticationFilter up=new UsernamePasswordAuthenticationFilter();
 	
 	private final UserDTO dto;
+	
+	public CustomUserDetails(UserDTO dto) {
+		this.dto=dto;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -29,7 +33,6 @@ public class CustomUserDetails implements UserDetails{
                 return dto.getRole();
             }
         });
-
         return collection;
 	} // 권한 검증
 

@@ -1,46 +1,39 @@
 package com.hg.web.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
-import com.hg.web.service.MemberServiceImpl;
+import com.hg.web.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
+
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api")
-public class MemberController {
+@RequestMapping("/api/members")
+public class MemberController<T>{
 	
-	private final MemberServiceImpl memberserviceimpl;
+	private final MemberService memberService;
+	
+	// 회원가입
+	@PostMapping
+	public ResponseEntity<ResponseDTO<Void>> joinProcess(UserDTO dto) {
+		
+	System.out.println("회원가입 controller 실행");
 
-	// 로그인 페이지
-	@GetMapping("/login")
-		public String loginPage() {
-			return "members/login";
-		}
-	
-	// 회원가입 페이지
-	@GetMapping("/join")
-		public String joinpage() {
-		return "members/join";
+	return memberService.Joinprocess(dto);
 	}
 	
-	// 회원가입 진행
-	@PostMapping("/joinProcess")
-	public String joinProcess(UserDTO dto) {
-	
-	boolean res=memberserviceimpl.Joinprocess(dto);
-	System.out.println(res);
-	
-	if(!res) {
-		System.out.println("회원가입 실패");
-		return "redirect:/api/join";
+	// 아이디 중복 검증
+	@PostMapping("/idValidate")
+	public ResponseEntity<ResponseDTO<Void>> idValidate(@RequestBody UserDTO dto){
+		
+		return memberService.CountID(dto.getUsername());
 	}
-	
-	return "redirect:/api/login";
-}
-}
+
+};

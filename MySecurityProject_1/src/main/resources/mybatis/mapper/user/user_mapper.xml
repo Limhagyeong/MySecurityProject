@@ -12,8 +12,8 @@
 
  	<!-- 회원 가입 -->
  	<insert id="Joinprocess" parameterType="UserDTO">
- 		INSERT INTO myjoin(username,pwd,role)
- 		VALUES(#{username},#{pwd},#{role})
+ 		INSERT INTO myjoin(username,pwd,name,gender,bday,phone,email,role)
+ 		VALUES(#{username},#{pwd},#{name},#{gender},#{bday},#{phone},#{email},#{role})
  	</insert>
  	
  	<!-- 로그인 아이디 검증 -->

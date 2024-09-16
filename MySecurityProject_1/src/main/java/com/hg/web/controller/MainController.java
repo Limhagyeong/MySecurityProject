@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.hg.web.MySecurityProject1Application;
 import com.hg.web.service.SecSessionServiceImpl;
@@ -13,23 +14,25 @@ import com.hg.web.service.SecSessionServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class MainController {
 	
 	private final SecSessionServiceImpl sss;
 	
 	@GetMapping("/api")
-	public String main(Model model) {
+	public Map<String, String> main() {
 		
 		Map<String, String> sessionData=sss.secSession();
 		
 		String id=sessionData.get("id");
 		String role=sessionData.get("role");
 		
-		model.addAttribute("id",id);
-		model.addAttribute("role",role);
+		Map<String, String> res=new HashMap<>();
 		
-		return "main";
+		res.put("id", id);
+		res.put("role", role);
+		
+		return res;
 	}
 }

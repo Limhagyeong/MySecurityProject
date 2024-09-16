@@ -1,9 +1,13 @@
 package com.hg.web.service;
 
-import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.hg.web.common.exception.BadRequestException;
+import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.mapper.UserMapper;
 
@@ -17,33 +21,26 @@ private final UserMapper membermapper;
 private final BCryptPasswordEncoder bpe;
 
 @Override
-public boolean Joinprocess(UserDTO dto) {
+public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto) {
 	
-	UserDTO data=new UserDTO();
-	System.out.println(dto.getUsername());
-	int count=membermapper.countID(dto.getUsername()); // 아이디 중복 검증
+	dto.setRole("ROLE_USER");
+		
+	membermapper.Joinprocess(dto);
+		
+	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<Void>(),HttpStatus.OK); //성공 
+}
+
+// 아이디 중복 검증
+@Override
+public ResponseEntity<ResponseDTO<Void>> CountID(String username){
+	// TODO Auto-generated method stub
 	
-	try {
-		
-		if(count>0) {
-			System.out.println("이미 존재하는 아이디 입니다");
-			return false;
-		}
-		
-		data.setUsername(dto.getUsername());
-		data.setPwd(bpe.encode(dto.getPwd()));
-		data.setRole("ROLE_USER");
-		
-		System.out.println(data.getRole());
-		
-		membermapper.Joinprocess(data);
-		
-		
-	}catch(Exception e) {
-		System.out.println("회원가입 처리 중 오류 발생"+e);
-		return false;
+    int count=membermapper.countID(username); // 아이디 중복 검증
+    
+	if(count>0) {
+		throw new BadRequestException("사용 중인 아이디입니다.");
 	}
-	
-	return true;
+
+	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 }
 }
