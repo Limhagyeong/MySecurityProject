@@ -9,6 +9,7 @@ public class ResponseDTO<T> {
 	private int code;
 	private String message;
 	private T data;
+	private String loggingMessage;
 	
 	
 	// 요청 성공 시 ResponseApi (데이터 없는 단순 요청에 대한)

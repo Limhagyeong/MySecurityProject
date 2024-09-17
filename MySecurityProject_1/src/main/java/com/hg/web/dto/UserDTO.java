@@ -18,7 +18,7 @@ public class UserDTO {
 	
 	@NotBlank(message = "공백일 수 없습니다.")
     @Pattern(regexp = "^[^\s][^\s]*$", message = "공백으로 시작하거나 공백을 포함할 수 없음")
-    @Pattern(regexp = "^[a-zA-Z0-9_]*$", message = "영문자, 숫자, _ 만 허용")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "영문자, 숫자만 허용")
 	private String username; // ID
 	
 	@NotBlank(message = "공백일 수 없습니다.")
