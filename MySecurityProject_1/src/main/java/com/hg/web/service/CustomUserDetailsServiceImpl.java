@@ -29,7 +29,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 			if (data==null) {
 				System.out.println("사용자를 찾을 수 없습니다: " + username);
 	            // 예외를 던져서 사용자 정보를 찾지 못했음을 알림
-	            throw new UsernameNotFoundException("임하경으로 대체");
+	            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다");
         // CustomUserDetails는 UserDetails 인터페이스를 구현한 클래스여야 함
 	}
 			 return new CustomUserDetails(data);

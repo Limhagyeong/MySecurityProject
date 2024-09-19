@@ -13,4 +13,8 @@ public interface UserMapper {
 	public void Joinprocess(UserDTO dto);
 	// 로그인 검증
 	UserDTO IDCheck(String username);
+	// 아이디 찾기
+	UserDTO findID(UserDTO dto);
+	// 발급한 임시 비밀번호로 업데이트
+	public void updateTempPwd(UserDTO dto);
 }

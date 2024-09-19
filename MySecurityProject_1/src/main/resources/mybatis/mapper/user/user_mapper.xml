@@ -22,8 +22,13 @@
  	</select>
  	
  	<!-- 아이디 찾기 (이름, 이메일 활용) -->
- 	<select id="findID" resultType="UserDTO" parameterType="String">
+ 	<select id="findID" resultType="UserDTO" parameterType="UserDTO">
  		SELECT * FROM myjoin WHERE name=#{name} AND email=#{email}
  	</select>
+ 	
+ 	<!-- 발급한 임시 비밀번호로 업데이트 -->
+ 	<update id="updateTempPwd" parameterType="UserDTO">
+ 		UPDATE myjoin SET password=#{password} WHERE email=#{email}
+ 	</update> 
 
  </mapper>

@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface MemberService {
 	public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto); // 회원가입
 	public ResponseEntity<ResponseDTO<Void>> CountID(String username); // ID 중복 검증
+	public ResponseEntity<ResponseDTO<Void>> findID(UserDTO dto); // ID 찾기
+	public ResponseEntity<ResponseDTO<Void>> findPwd(UserDTO dto); // 발급한 임시 비밀번호로 업데이트
 	
 }
 

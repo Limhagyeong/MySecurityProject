@@ -2,6 +2,7 @@ package com.hg.web.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,7 @@ public class MemberServiceImpl implements MemberService {
 
 private final UserMapper membermapper;
 private final BCryptPasswordEncoder bpe;
+private final MailServiceImpl mailService;
 
 @Override
 public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto) {
@@ -52,4 +54,26 @@ public ResponseEntity<ResponseDTO<Void>> CountID(String username){
 
 	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 }
+
+@Override
+public ResponseEntity<ResponseDTO<Void>> findID(UserDTO dto) {
+	// TODO Auto-generated method stub
+	if(membermapper.findID(dto)==null) {
+		throw new BadRequestException("가입되지 않은 정보입니다.");
+	}
+	UserDTO findDto=membermapper.findID(dto);
+	mailService.sendMail(findDto.getEmail(), "아이디 찾기 테스트", findDto.getUsername());
+	
+	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
+	}
+
+@Override
+public ResponseEntity<ResponseDTO<Void>> findPwd(UserDTO dto) {
+	// TODO Auto-generated method stub
+	if(membermapper.findID(dto)==null) {
+		throw new BadRequestException("가입되지 않은 정보입니다.");
+	}
+	return null;
 }
+}
+

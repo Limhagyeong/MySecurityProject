@@ -5,16 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.hg.web.service.MailService;
+import com.hg.web.service.MailServiceImpl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
 public class MailServiceTest {
 	@Autowired
-	private MailService ms;
+	private MailServiceImpl ms;
 	
 	@Test
 	@DisplayName("메일전송")
