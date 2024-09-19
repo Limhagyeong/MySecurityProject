@@ -16,9 +16,14 @@
  		VALUES(#{username},#{pwd},#{name},#{gender},#{bday},#{phone},#{email},#{role})
  	</insert>
  	
- 	<!-- 로그인 아이디 검증 -->
- 	<select id="findID" resultType="UserDTO" parameterType="String">
+ 	<!-- 입력한 ID를 시큐리티에서 받아 로그인 검증 -->
+ 	<select id="IDCheck" resultType="UserDTO" parameterType="String">
  		SELECT * FROM myjoin WHERE username=#{username}
+ 	</select>
+ 	
+ 	<!-- 아이디 찾기 (이름, 이메일 활용) -->
+ 	<select id="findID" resultType="UserDTO" parameterType="String">
+ 		SELECT * FROM myjoin WHERE name=#{name} AND email=#{email}
  	</select>
 
  </mapper>

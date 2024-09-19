@@ -34,7 +34,7 @@ public class UserDTO {
 	private String gender;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date bday;
+	private String bday;
 	
 	@Pattern(regexp = "^\\d{11}$", message = "핸드폰번호는 11자리 정수 ")
 	private String phone;
@@ -47,4 +47,7 @@ public class UserDTO {
 	private Date joindate;
 	
 	private String role;
+	
+	// 난수 발생
+	
 }

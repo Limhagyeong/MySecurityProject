@@ -12,5 +12,5 @@ public interface UserMapper {
 	// 회원가입
 	public void Joinprocess(UserDTO dto);
 	// 로그인 검증
-	UserDTO findID(String username);
+	UserDTO IDCheck(String username);
 }

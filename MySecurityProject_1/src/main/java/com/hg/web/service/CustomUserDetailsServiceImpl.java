@@ -21,7 +21,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		
-		UserDTO data=membermapper.findID(username);
+		UserDTO data=membermapper.IDCheck(username);
 		// DB로부터 username을 검증하여 데이터를 담음
 			System.out.println("서비스 실행");
 			System.out.println("서비스 데이터"+data);

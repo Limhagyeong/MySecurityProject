@@ -6,7 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.hg.web.common.InputValidator;
 import com.hg.web.common.exception.BadRequestException;
+import com.hg.web.common.exception.InternalErrorException;
 import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.mapper.UserMapper;
@@ -22,6 +24,13 @@ private final BCryptPasswordEncoder bpe;
 
 @Override
 public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto) {
+	// 비밀번호 유효성 검사
+	if(!InputValidator.pwdValCheck(dto.getPwd())) {
+		throw new InternalErrorException("유효하지 않은 입력입니다.", "pwdValidation 실패");
+	}
+	
+	String encodedPwd=bpe.encode(dto.getPwd()); // 	비밀번호 암호화
+	dto.setPwd(encodedPwd); 
 	
 	dto.setRole("ROLE_USER");
 		

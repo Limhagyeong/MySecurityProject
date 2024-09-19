@@ -11,7 +11,7 @@ public class InternalErrorException extends RuntimeException{
 		super(errorMessage);
 		this.errorCode="500";
 		this.errorMessage=errorMessage;
-		this.serverLogginMessage=serverLogginMessage;
+		this.serverLogginMessage=serverLogginMessage; // 서버에서도 간단히 오류 확인할 수 있또록 로그 메시지 지정
 	}
 
 	public String getErrorCode() {
