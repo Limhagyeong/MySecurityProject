@@ -22,7 +22,7 @@ public class MailService {
 	 * 메일 전송
 	 * @param to : 수신자
 	 * @param subject : 제목
-	 * @param body : 본문
+	 * @param body :  본문
 	 */
 	public void sendMail(String to, String subject, String body) {
 
