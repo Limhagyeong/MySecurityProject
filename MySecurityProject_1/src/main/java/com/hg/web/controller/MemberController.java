@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.hg.web.common.InputValidator;
-import com.hg.web.common.Random;
+import com.hg.web.common.TempPwd;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
 import com.hg.web.dto.ResponseDTO;
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController<T>{
 	
 	private final MemberService memberService;
-	private final Random r;
+	private final TempPwd r;
 	
 	// 회원가입
 	@PostMapping
@@ -59,17 +59,46 @@ public class MemberController<T>{
 		
 		return memberService.CountID(dto.getUsername());
 	}
+//	
+//	// 아이디 찾기
+//		@PostMapping("/findID")
+//		public ResponseEntity<ResponseDTO<Void>> findID(@RequestBody UserDTO dto){
+//			// 이메일 유효성 검사
+//			if (!InputValidator.emailValCheck(dto.getEmail())) {
+//				throw new InternalErrorException("유효하지 않은 입력입니다.", "emailValidation 실패");
+//			}
+//			
+//			return memberService.findID(dto);
+//		}
+//		
+//		// 비밀번호 찾기
+//		@PostMapping("/findPwd")
+//		public ResponseEntity<ResponseDTO<Void>> findPwd(@RequestBody UserDTO dto){
+//			// 이메일 유효성 검사
+//			if (!InputValidator.emailValCheck(dto.getEmail())) {
+//				throw new InternalErrorException("유효하지 않은 입력입니다.", "emailValidation 실패");
+//			}
+//			
+//			return memberService.findPwd(dto);
+//		}
 	
-	// 아이디 찾기
-	@PostMapping("/findID")
-	public ResponseEntity<ResponseDTO<Void>> findID(@RequestBody UserDTO dto){
+	@PostMapping("/findUserInfo")
+	public ResponseEntity<ResponseDTO<Void>> findUserInfo(@RequestBody UserDTO dto) {
+	    
 		// 이메일 유효성 검사
-		if (!InputValidator.emailValCheck(dto.getEmail())) {
-			throw new InternalErrorException("유효하지 않은 입력입니다.", "emailValidation 실패");
-		}
-		
-		return memberService.findID(dto);
+	    if (!InputValidator.emailValCheck(dto.getEmail())) {
+	        throw new InternalErrorException("유효하지 않은 입력입니다.", "emailValidation 실패");
+	    }
+	    
+	    // 요청에 따른 로직 수행
+	    if (dto.getRequestType().equals("findID")) {
+	        return memberService.findID(dto); // 아이디 찾기 로직
+	    } 
+	    else if (dto.getRequestType().equals("findPwd")) {
+	        return memberService.findPwd(dto); // 비밀번호 찾기 로직
+	    } 
+	    else {
+	        throw new BadRequestException("잘못된 요청입니다.");
+	    }
 	}
-		
-
 };

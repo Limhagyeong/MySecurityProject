@@ -15,6 +15,7 @@ import lombok.Data;
 @Data
 public class UserDTO {
 	private int id;
+	private String requestType; // 아이디 찾기, 비밀번호 찾기 구분 변수
 	
 	@NotBlank(message = "공백일 수 없습니다.")
     @Pattern(regexp = "^[^\s][^\s]*$", message = "공백으로 시작하거나 공백을 포함할 수 없음")
@@ -25,7 +26,7 @@ public class UserDTO {
     @Size(min = 8, max = 20, message = "비밀번호는 8자리 이상, 20자리 이하")
     @Pattern(regexp = "^[^\s][^\s]*$", message = "공백으로 시작하거나 공백을 포함할 수 없음")
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).*$", message = "문자,숫자,특수문자 하나 이상 포함")
-	private String pwd;
+	private String password;
 	
 	@NotBlank(message = "공백일 수 없습니다.")
     @Pattern(regexp = "^[^\s][^\s]*$", message = "공백으로 시작하거나 공백을 포함할 수 없음")

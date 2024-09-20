@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.hg.web.common.InputValidator;
+import com.hg.web.common.TempPwd;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
 import com.hg.web.dto.ResponseDTO;
@@ -27,14 +28,14 @@ private final MailServiceImpl mailService;
 @Override
 public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto) {
 	// 비밀번호 유효성 검사
-	if(!InputValidator.pwdValCheck(dto.getPwd())) {
+	if(!InputValidator.pwdValCheck(dto.getPassword())) {
 		throw new InternalErrorException("유효하지 않은 입력입니다.", "pwdValidation 실패");
 	}
 	
-	String encodedPwd=bpe.encode(dto.getPwd()); // 	비밀번호 암호화
-	dto.setPwd(encodedPwd); 
-	
+	String encodedPwd=bpe.encode(dto.getPassword()); // 	비밀번호 암호화
+	dto.setPassword(encodedPwd); 
 	dto.setRole("ROLE_USER");
+	dto.setRequestType(dto.getRequestType());
 		
 	membermapper.Joinprocess(dto);
 		
@@ -55,25 +56,44 @@ public ResponseEntity<ResponseDTO<Void>> CountID(String username){
 	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 }
 
+// 아이디 찾기
 @Override
 public ResponseEntity<ResponseDTO<Void>> findID(UserDTO dto) {
 	// TODO Auto-generated method stub
-	if(membermapper.findID(dto)==null) {
+	
+	// 가입여부 확인
+	if(membermapper.findUser(dto)==null) {
 		throw new BadRequestException("가입되지 않은 정보입니다.");
 	}
-	UserDTO findDto=membermapper.findID(dto);
-	mailService.sendMail(findDto.getEmail(), "아이디 찾기 테스트", findDto.getUsername());
+	UserDTO findDto=membermapper.findUser(dto);
+	mailService.sendMail(findDto.getEmail(), "아이디 찾기 테스트", findDto.getUsername(),"findID");
 	
 	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 	}
 
+// 비밀번호 찾기
 @Override
 public ResponseEntity<ResponseDTO<Void>> findPwd(UserDTO dto) {
 	// TODO Auto-generated method stub
-	if(membermapper.findID(dto)==null) {
+	
+	// 가입여부 확인
+	if(membermapper.findUser(dto)==null) {
 		throw new BadRequestException("가입되지 않은 정보입니다.");
 	}
-	return null;
+	
+	UserDTO findDto=membermapper.findUser(dto); // 클라이언트가 보낸 정보로 회원 찾기
+	
+	findDto.setPassword(TempPwd.getRandomPassword()); // 임시 비밀번호 발급 => 이메일 전송
+	String encodedPwd=bpe.encode(findDto.getPassword()); // 암호화된 임시 비밀번호 => DB 업데이트
+
+	findDto.setEmail(dto.getEmail());
+	findDto.setUsername(dto.getUsername());
+	
+	membermapper.updateTempPwd(encodedPwd, findDto.getEmail()); // 암호화된 임시 비번으로 업데이트
+	
+	mailService.sendMail(findDto.getEmail(), "비밀번호 찾기 테스트", findDto.getPassword(), "findPwd"); // 임시 비번 메일 발송
+
+	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 }
 }
 

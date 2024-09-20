@@ -39,7 +39,7 @@ public class CustomUserDetails implements UserDetails{
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return dto.getPwd();
+		return dto.getPassword();
 	}
 
 	@Override

@@ -19,6 +19,6 @@ public class MailServiceTest {
 	@DisplayName("메일전송")
 	void sendMail() {
 		System.out.println("메일 테스트");
-		ms.sendMail("mumu878@naver.com", "시큐리티 프로젝트 메일 테스트", "시큐리티 프로젝트 메일 테스트");
+		ms.sendMail("mumu878@naver.com", "시큐리티 프로젝트 메일 테스트", "시큐리티 프로젝트 메일 테스트", "findID");
 	}
 }

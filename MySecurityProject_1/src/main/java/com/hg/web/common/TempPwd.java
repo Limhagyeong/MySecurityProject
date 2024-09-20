@@ -4,28 +4,28 @@ import java.security.SecureRandom;
 
 import org.springframework.stereotype.Component;
 @Component
-public final class Random {
+public final class TempPwd {
 
-	private static final String lowercase="abcdefghijklmnopqrstuvwxyz";
-	private static final String uppercase="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	private static final String degits="0123456789";
-	private static final String special_chars="!@#$%^&*()_+-=[]{}|;:',.<>?";
+	private static final String LOWERCASE="abcdefghijklmnopqrstuvwxyz";
+	private static final String UPPERCASE="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String DEGITS="0123456789";
+	private static final String SPECIAL_CHAR="!@#$%^&*()_+-=[]{}|;:',.<>?";
 	
-	private static final String all_chars=lowercase+uppercase+degits+special_chars;
+	private static final String ALL_CHAR=LOWERCASE+UPPERCASE+DEGITS+SPECIAL_CHAR;
 
 	private static final SecureRandom random=new SecureRandom();
 	
 	// 하나 이상의 알파벳, 숫자, 특수문자를 포함해야한다는 조건 만족
 	public static String getRandomPassword() {
 		StringBuilder password=new StringBuilder();
-		password.append(getRandomChar(lowercase));
-		password.append(getRandomChar(uppercase));
-		password.append(getRandomChar(degits));
-		password.append(getRandomChar(special_chars));
+		password.append(getRandomChar(LOWERCASE));
+		password.append(getRandomChar(UPPERCASE));
+		password.append(getRandomChar(DEGITS));
+		password.append(getRandomChar(SPECIAL_CHAR));
 		
 		// 나머지 12자리는 모든 문자 중 랜덤으로 발생
 		for(int i=4;i<15;i++) {
-			password.append(getRandomChar(all_chars));
+			password.append(getRandomChar(ALL_CHAR));
 		}
 		
 		// 배열 형태로 변환
@@ -38,9 +38,8 @@ public final class Random {
 			passwordArray[index]=passwordArray[i]; // index 위치에 i 요소 저장
 			passwordArray[i]=temp; // i 위치에 index 요소 저장
 		}
-		System.out.println(new String(passwordArray));
+
 		return new String(passwordArray);
-		
 	}
 	
 	// 하나의 랜덤 문자 발생

@@ -25,6 +25,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 		// DB로부터 username을 검증하여 데이터를 담음
 			System.out.println("서비스 실행");
 			System.out.println("서비스 데이터"+data);
+			System.out.println(data.getPassword());
 			
 			if (data==null) {
 				System.out.println("사용자를 찾을 수 없습니다: " + username);
