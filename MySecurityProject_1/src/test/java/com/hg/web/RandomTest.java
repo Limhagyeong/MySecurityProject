@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.hg.web.common.TempPwd;
+import com.hg.web.common.TempRandomChar;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RandomTest {
 	
 	@Autowired
-	private TempPwd r;
+	private TempRandomChar r;
 	
 	@Test
 	void randomTest() {

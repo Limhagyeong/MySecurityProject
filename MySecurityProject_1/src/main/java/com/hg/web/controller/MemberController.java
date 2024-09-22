@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.hg.web.common.InputValidator;
-import com.hg.web.common.TempPwd;
+import com.hg.web.common.TempRandomChar;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
+import com.hg.web.dto.MailAuthDTO;
 import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.service.MemberService;
 
+import jakarta.xml.ws.RespectBinding;
 import lombok.RequiredArgsConstructor;
 
 
@@ -26,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController<T>{
 	
 	private final MemberService memberService;
-	private final TempPwd r;
+	private final TempRandomChar r;
 	
 	// 회원가입
 	@PostMapping
@@ -59,28 +61,6 @@ public class MemberController<T>{
 		
 		return memberService.CountID(dto.getUsername());
 	}
-//	
-//	// 아이디 찾기
-//		@PostMapping("/findID")
-//		public ResponseEntity<ResponseDTO<Void>> findID(@RequestBody UserDTO dto){
-//			// 이메일 유효성 검사
-//			if (!InputValidator.emailValCheck(dto.getEmail())) {
-//				throw new InternalErrorException("유효하지 않은 입력입니다.", "emailValidation 실패");
-//			}
-//			
-//			return memberService.findID(dto);
-//		}
-//		
-//		// 비밀번호 찾기
-//		@PostMapping("/findPwd")
-//		public ResponseEntity<ResponseDTO<Void>> findPwd(@RequestBody UserDTO dto){
-//			// 이메일 유효성 검사
-//			if (!InputValidator.emailValCheck(dto.getEmail())) {
-//				throw new InternalErrorException("유효하지 않은 입력입니다.", "emailValidation 실패");
-//			}
-//			
-//			return memberService.findPwd(dto);
-//		}
 	
 	@PostMapping("/findUserInfo")
 	public ResponseEntity<ResponseDTO<Void>> findUserInfo(@RequestBody UserDTO dto) {
@@ -101,4 +81,17 @@ public class MemberController<T>{
 	        throw new BadRequestException("잘못된 요청입니다.");
 	    }
 	}
+	
+	// 이메일 인증 코드 발송
+	@PostMapping("/sendMailAuth")
+	public ResponseEntity<ResponseDTO<Void>> sendAuthMail(@RequestBody MailAuthDTO dto){
+		return memberService.mailAuth(dto.getEmail());
+	   
+	}
+	// 이메일 인증 여부
+	@PostMapping("/mailAuthVal")
+	public ResponseEntity<ResponseDTO<Void>> mailAuthVal(@RequestBody MailAuthDTO dto){
+		return memberService.mailAuthOK(dto);
+	}
+
 };

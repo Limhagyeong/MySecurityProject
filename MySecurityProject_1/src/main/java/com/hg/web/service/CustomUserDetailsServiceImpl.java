@@ -12,7 +12,7 @@ import com.hg.web.dto.UserDTO;
 import com.hg.web.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
-
+// CustomUserDetails는 UserDetails 인터페이스를 구현한 클래스여야 함
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsServiceImpl implements UserDetailsService{
@@ -21,17 +21,13 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		
-		UserDTO data=membermapper.IDCheck(username);
 		// DB로부터 username을 검증하여 데이터를 담음
-			System.out.println("서비스 실행");
-			System.out.println("서비스 데이터"+data);
-			System.out.println(data.getPassword());
+		UserDTO data=membermapper.idCheck(username);
 			
 			if (data==null) {
 				System.out.println("사용자를 찾을 수 없습니다: " + username);
 	            // 예외를 던져서 사용자 정보를 찾지 못했음을 알림
 	            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다");
-        // CustomUserDetails는 UserDetails 인터페이스를 구현한 클래스여야 함
 	}
 			 return new CustomUserDetails(data);
 

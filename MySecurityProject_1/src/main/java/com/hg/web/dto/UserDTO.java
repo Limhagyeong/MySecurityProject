@@ -16,6 +16,7 @@ import lombok.Data;
 public class UserDTO {
 	private int id;
 	private String requestType; // 아이디 찾기, 비밀번호 찾기 구분 변수
+	private String code; // 이메일 인증 코드
 	
 	@NotBlank(message = "공백일 수 없습니다.")
     @Pattern(regexp = "^[^\s][^\s]*$", message = "공백으로 시작하거나 공백을 포함할 수 없음")

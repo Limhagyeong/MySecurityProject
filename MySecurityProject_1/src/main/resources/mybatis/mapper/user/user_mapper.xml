@@ -30,5 +30,26 @@
  	<update id="updateTempPwd" parameterType="String">
  		UPDATE myjoin SET password=#{password} WHERE email=#{email}
  	</update> 
+ 	
+ 	<!-- 이메일 중복 여부 확인 -->
+ 	<select id="findEmail" resultType="UserDTO" parameterType="String">
+ 		SELECT * FROM myjoin WHERE email=#{email}
+ 	</select>
+ 	
+ 	<!-- 이메일 인증 이력 저장 -->
+ 	<insert id="mailAuthCode" parameterType="MailAuthDTO">
+ 		INSERT INTO mailauthcode(code, email,expiration,isauth) VALUES(#{code},#{email},#{expiration},isauth)
+ 	</insert>
+ 	
+ 	<!-- 인증 코드 검증 => 가장 최신의 인증 코드에 대해 검증 -->
+ 	<select id="mailAuthValidation" resultType="MailAuthDTO" parameterType="MailAuthDTO">
+ 		SELECT * FROM mailauthcode WHERE email=#{email} ORDER BY mailauthcode_num DESC LIMIT 1;
+ 	</select>
+ 	
+ 	<!-- 인증되었다면 isauth를 Y로 업데이트 -->
+ 	<update id="mailAuthOK" parameterType="MailAuthDTO">
+ 		UPDATE mailauthcode SET isauth='Y' WHERE email=#{email} AND code=#{code}
+ 	</update>
+ 	
 
  </mapper>

@@ -6,11 +6,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.hg.web.common.InputValidator;
-import com.hg.web.common.TempPwd;
+import com.hg.web.common.TempRandomChar;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
+import com.hg.web.dto.MailAuthDTO;
 import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.mapper.UserMapper;
@@ -37,7 +39,7 @@ public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto) {
 	dto.setRole("ROLE_USER");
 	dto.setRequestType(dto.getRequestType());
 		
-	membermapper.Joinprocess(dto);
+	membermapper.joinProcess(dto);
 		
 	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<Void>(),HttpStatus.OK); //성공 
 }
@@ -66,7 +68,7 @@ public ResponseEntity<ResponseDTO<Void>> findID(UserDTO dto) {
 		throw new BadRequestException("가입되지 않은 정보입니다.");
 	}
 	UserDTO findDto=membermapper.findUser(dto);
-	mailService.sendMail(findDto.getEmail(), "아이디 찾기 테스트", findDto.getUsername(),"findID");
+	mailService.sendMail(findDto.getEmail(), "아이디 찾기 테스트", findDto.getUsername(), dto.getRequestType());
 	
 	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 	}
@@ -83,7 +85,7 @@ public ResponseEntity<ResponseDTO<Void>> findPwd(UserDTO dto) {
 	
 	UserDTO findDto=membermapper.findUser(dto); // 클라이언트가 보낸 정보로 회원 찾기
 	
-	findDto.setPassword(TempPwd.getRandomPassword()); // 임시 비밀번호 발급 => 이메일 전송
+	findDto.setPassword(TempRandomChar.getRandomPassword()); // 임시 비밀번호 발급 => 이메일 전송
 	String encodedPwd=bpe.encode(findDto.getPassword()); // 암호화된 임시 비밀번호 => DB 업데이트
 
 	findDto.setEmail(dto.getEmail());
@@ -91,9 +93,25 @@ public ResponseEntity<ResponseDTO<Void>> findPwd(UserDTO dto) {
 	
 	membermapper.updateTempPwd(encodedPwd, findDto.getEmail()); // 암호화된 임시 비번으로 업데이트
 	
-	mailService.sendMail(findDto.getEmail(), "비밀번호 찾기 테스트", findDto.getPassword(), "findPwd"); // 임시 비번 메일 발송
+	mailService.sendMail(findDto.getEmail(), "비밀번호 찾기 테스트", findDto.getPassword(), dto.getRequestType()); // 임시 비번 메일 발송
 
 	return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 }
+
+// 이메일 인증
+@Override
+public ResponseEntity<ResponseDTO<Void>> mailAuth(String email) {
+	// TODO Auto-generated method stub
+	// 이메일 인증 번호 전송
+	return mailService.sendAuthMail(email);
+}
+
+@Override
+public ResponseEntity<ResponseDTO<Void>> mailAuthOK(MailAuthDTO dto) {
+	// TODO Auto-generated method stub
+	return mailService.mailAuthValidation(dto);
+}
+
+
 }
 

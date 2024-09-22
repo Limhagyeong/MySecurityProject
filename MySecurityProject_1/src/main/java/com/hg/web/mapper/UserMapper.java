@@ -2,6 +2,7 @@ package com.hg.web.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.hg.web.dto.MailAuthDTO;
 import com.hg.web.dto.UserDTO;
 
 @Mapper
@@ -10,11 +11,20 @@ public interface UserMapper {
 	// 회원가입 중복 방지
 	int countID(String username);
 	// 회원가입
-	public void Joinprocess(UserDTO dto);
+	public void joinProcess(UserDTO dto);
 	// 로그인 검증
-	UserDTO IDCheck(String username);
+	UserDTO idCheck(String username);
 	// 아이디 찾기
 	UserDTO findUser(UserDTO dto);
 	// 암호화된 임시 비밀번호로 업데이트
 	public void updateTempPwd(String password, String email);
+	// 이메일 중복 여부 확인
+	public UserDTO findEmail(String email);
+	// 이메일 인증이력 저장
+	public void mailAuthCode(MailAuthDTO mailDTO);
+	// 코드 인증 검증
+	MailAuthDTO mailAuthValidation(MailAuthDTO mailDTO);
+	// 인증 완료
+	public void mailAuthOK(MailAuthDTO mailDTO);
+	
 }
