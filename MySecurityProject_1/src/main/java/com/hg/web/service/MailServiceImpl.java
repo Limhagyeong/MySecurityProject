@@ -82,7 +82,7 @@ public class MailServiceImpl implements MailService {
 		// 이메일 중복 여부 확인
 		UserDTO dto=memberMapper.findEmail(email);
 		if(dto!=null) {
-			throw new BadRequestException("이미 사용 중인 이메일입니다.");
+			throw new BadRequestException("이미 가입된 이메일입니다.");
 		}
 		
 		try {
@@ -121,28 +121,19 @@ public class MailServiceImpl implements MailService {
 	// 인증코드 검증
 	@Transactional
 	public ResponseEntity<ResponseDTO<Void>> mailAuthValidation(MailAuthDTO dto){
-	
-//		MailAuthDTO mailDTO=new MailAuthDTO(); // 인증번호 암호화를 위함
-//		
-//		System.out.println(bpe.encode(dto.getCode()));
-//		mailDTO.setCode(dto.getCode());
-//		mailDTO.setEmail(dto.getEmail());
-		
-		
 
 		// 정보에 맞는 DB데이터가 있는지 검증
 		MailAuthDTO MailDto=memberMapper.mailAuthValidation(dto);
-		if (!bpe.matches(dto.getCode(), MailDto.getCode())) {
+		if (!bpe.matches(dto.getCode(), MailDto.getCode())) { // 입력 코드를 암호화한 후 DB에 저장된 암호화된 코드와 비교 (솔트는 자동으로 처리됨)
 			throw new BadRequestException("인증코드가 일치하지 않습니다.");
 		} 		
 		
-		System.out.println(dto.getCode());
-		System.out.println(dto.getEmail());
-		// 인증완료 업데이트
+		// 인증완료 이력 업데이트
 		memberMapper.mailAuthOK(MailDto);
 		return new ResponseEntity<ResponseDTO<Void>>(new ResponseDTO<>(), HttpStatus.OK); // 성공
 		
 	}
+	
 	/*
 	 * 고정 메세지 (다수에게 일괄적으로 보내야할 경우)
 	 * @param message : 본문
