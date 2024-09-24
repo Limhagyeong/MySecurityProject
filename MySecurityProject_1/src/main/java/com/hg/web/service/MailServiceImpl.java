@@ -123,11 +123,11 @@ public class MailServiceImpl implements MailService {
 	public ResponseEntity<ResponseDTO<Void>> mailAuthValidation(MailAuthDTO dto){
 
 		// 정보에 맞는 DB데이터가 있는지 검증
-		MailAuthDTO MailDto=memberMapper.mailAuthValidation(dto);
+		MailAuthDTO MailDto=memberMapper.mailAuthValidation(dto);	
+		// 인증 코드가 일치하지 않는 경우
 		if (!bpe.matches(dto.getCode(), MailDto.getCode())) { // 입력 코드를 암호화한 후 DB에 저장된 암호화된 코드와 비교 (솔트는 자동으로 처리됨)
 			throw new BadRequestException("인증코드가 일치하지 않습니다.");
 		} 		
-		
 		// 인증완료 이력 업데이트
 		memberMapper.mailAuthOK(MailDto);
 		return new ResponseEntity<ResponseDTO<Void>>(new ResponseDTO<>(), HttpStatus.OK); // 성공

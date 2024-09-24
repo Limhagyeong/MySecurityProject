@@ -2,11 +2,8 @@ package com.hg.web.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.hg.web.common.InputValidator;
 import com.hg.web.common.TempRandomChar;
@@ -29,11 +26,14 @@ private final MailServiceImpl mailService;
 
 @Override
 public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto) {
+	// 이메일 인증 진행 여부
+	if(membermapper.mailVerified(dto)==0) {
+		throw new BadRequestException("이메일 인증을 진행하세요.");
+	}
 	// 비밀번호 유효성 검사
 	if(!InputValidator.pwdValCheck(dto.getPassword())) {
 		throw new InternalErrorException("유효하지 않은 입력입니다.", "pwdValidation 실패");
 	}
-	
 	String encodedPwd=bpe.encode(dto.getPassword()); // 	비밀번호 암호화
 	dto.setPassword(encodedPwd); 
 	dto.setRole("ROLE_USER");
@@ -106,6 +106,7 @@ public ResponseEntity<ResponseDTO<Void>> mailAuth(String email) {
 	return mailService.sendAuthMail(email);
 }
 
+// 메일 인증 코드 검증
 @Override
 public ResponseEntity<ResponseDTO<Void>> mailAuthOK(MailAuthDTO dto) {
 	// TODO Auto-generated method stub
