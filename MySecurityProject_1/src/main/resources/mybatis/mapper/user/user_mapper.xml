@@ -62,33 +62,5 @@
     	WHERE email=#{email} AND isauth='Y'
     	ORDER BY mailauthcode_num DESC LIMIT 1;
     </select>
- 	
- 	<!-- 이메일 인증 이력 저장 -->
- 	<insert id="mailAuthCode" parameterType="MailAuthDTO">
- 		INSERT INTO MAILAUTHCODE(code, email,expiration,isauth) 
- 		       VALUES(
- 		               #{code}
- 		              ,#{email}
- 		              ,#{expiration}
- 		              ,isauth
- 		              )
- 	</insert>
- 	
- 	<!-- 인증 코드 검증 => 가장 최신에 발급된 코드에 대해 -->
- 	<select id="mailAuthValidation" resultType="MailAuthDTO" parameterType="MailAuthDTO">
- 		SELECT mailauthcode_num,code,expiration,isauth,email 
- 		FROM MAILAUTHCODE
- 		WHERE email=#{email} 
- 		ORDER BY mailauthcode_num DESC LIMIT 1;
- 	</select>
- 	
- 	<!-- 인증되었다면 isauth를 Y로 업데이트 -->
- 	<update id="mailAuthOK" parameterType="MailAuthDTO">
- 		UPDATE MAILAUTHCODE
- 		SET isauth='Y' 
- 		WHERE email=#{email} AND code=#{code}
- 	</update>
 
- 	
- 	
  </mapper>

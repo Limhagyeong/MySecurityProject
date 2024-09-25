@@ -22,11 +22,6 @@ public interface UserMapper {
 	UserDTO findEmail(String email);
 	// 이메일 인증 진행 여부 확인
 	int mailVerified(UserDTO dto);
-	// 이메일 인증이력 저장
-	void mailAuthCode(MailAuthDTO mailDTO);
-	// 코드 인증 검증
-	MailAuthDTO mailAuthValidation(MailAuthDTO dto);
-	// 인증 완료
-	void mailAuthOK(MailAuthDTO mailDTO);
+	
 	
 }

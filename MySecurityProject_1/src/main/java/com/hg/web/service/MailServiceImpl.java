@@ -19,6 +19,7 @@ import com.hg.web.common.exception.InternalErrorException;
 import com.hg.web.dto.MailAuthDTO;
 import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
+import com.hg.web.mapper.MailAuthMapper;
 import com.hg.web.mapper.UserMapper;
 
 import jakarta.mail.MessagingException;
@@ -30,7 +31,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 	private final JavaMailSender mailSender;
-	private final UserMapper memberMapper;
+	private final UserMapper userMapper;
+	private final MailAuthMapper mailauthmapper;
 	private SimpleMailMessage simpleMessage=new SimpleMailMessage();
 	private final BCryptPasswordEncoder bpe;
 
@@ -80,7 +82,7 @@ public class MailServiceImpl implements MailService {
 	    }
 		
 		// 이메일 중복 여부 확인
-		UserDTO dto=memberMapper.findEmail(email);
+		UserDTO dto=userMapper.findEmail(email);
 		if(dto!=null) {
 			throw new BadRequestException("이미 가입된 이메일입니다.");
 		}
@@ -90,9 +92,6 @@ public class MailServiceImpl implements MailService {
 			MimeMessageHelper messageHelper=new MimeMessageHelper(message,true,"UTF-8");
 			
 			String authCode=TempRandomChar.emailAuthCode(); // 인증코드 생성
-			
-			System.out.println(authCode);
-			System.out.println(bpe.encode(authCode));
 			
 			MailAuthDTO mailDTO=new MailAuthDTO();
 			mailDTO.setEmail(email);
@@ -105,7 +104,7 @@ public class MailServiceImpl implements MailService {
 			String sendBody=String.format("메일 인증번호는 [&nbsp;%s&nbsp;] 입니다.<br>해당 정보로 인증을 진행해주세요.", authCode); 
 			messageHelper.setText(sendBody,true); // 본문
 			
-			memberMapper.mailAuthCode(mailDTO); // 인증 코드 관련 정보 DB 저장
+			mailauthmapper.mailAuthCode(mailDTO); // 인증 코드 관련 정보 DB 저장
 			
 			mailSender.send(message); 
 			
@@ -123,7 +122,7 @@ public class MailServiceImpl implements MailService {
 	public ResponseEntity<ResponseDTO<Void>> mailAuthValidation(MailAuthDTO dto){
 
 		// 정보에 맞는 DB데이터가 있는지 검증
-		MailAuthDTO MailDto=memberMapper.mailAuthValidation(dto);	
+		MailAuthDTO MailDto=mailauthmapper.mailAuthValidation(dto);	
 		// 인증 코드가 일치하지 않는 경우
 		if (!bpe.matches(dto.getCode(), MailDto.getCode())) { // 입력 코드를 암호화한 후 DB에 저장된 암호화된 코드와 비교 (솔트는 자동으로 처리됨)
 			throw new BadRequestException("인증코드가 일치하지 않습니다.");
@@ -133,7 +132,7 @@ public class MailServiceImpl implements MailService {
 			throw new BadRequestException("인증코드 유효시간이 만료되었습니다.");
 		}
 		// 인증완료 이력 업데이트
-		memberMapper.mailAuthOK(MailDto);
+		mailauthmapper.mailAuthOK(MailDto);
 		return new ResponseEntity<ResponseDTO<Void>>(new ResponseDTO<>(), HttpStatus.OK); // 성공
 	}
 	
