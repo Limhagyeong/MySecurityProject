@@ -39,7 +39,7 @@ public class SecurityConfiguration{
                  .loginProcessingUrl("/api/loginProcess") 
                  .defaultSuccessUrl("/api", true)
                  .permitAll() 
-         ); 
+         );
 		 
 		 http
          .csrf((auth) -> auth.disable());
@@ -63,6 +63,7 @@ public class SecurityConfiguration{
 	                return configuration;
 				}
 	        })));
+	       	
 		
 		return http.build();
 	}

@@ -13,7 +13,7 @@ public class EmailAuthCleanupScheduler {
 	private final MailAuthMapper mailauthmapper;
 	
 	//매일 자정 이메일 미인증 이력 삭제 스케줄러
-	@Scheduled(cron="0 0 * * * ?")
+	@Scheduled(cron="0 0 0 * * ?")
 	public void cleanupExpiredCode() {
 		try {
             int deletedCount = mailauthmapper.deleteMailAuthCode(); // 삭제된 레코드 수
