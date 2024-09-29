@@ -1,4 +1,4 @@
-package com.hg.web.service;
+package com.hg.web.service.impl;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +21,7 @@ import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.mapper.MailAuthMapper;
 import com.hg.web.mapper.UserMapper;
+import com.hg.web.service.MailService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -92,6 +93,7 @@ public class MailServiceImpl implements MailService {
 			MimeMessageHelper messageHelper=new MimeMessageHelper(message,true,"UTF-8");
 			
 			String authCode=TempRandomChar.emailAuthCode(); // 인증코드 생성
+			System.out.println(authCode);
 			
 			MailAuthDTO mailDTO=new MailAuthDTO();
 			mailDTO.setEmail(email);

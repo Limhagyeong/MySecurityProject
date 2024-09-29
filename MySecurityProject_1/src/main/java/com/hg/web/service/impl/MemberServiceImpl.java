@@ -1,4 +1,4 @@
-package com.hg.web.service;
+package com.hg.web.service.impl;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +14,7 @@ import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.mapper.MailAuthMapper;
 import com.hg.web.mapper.UserMapper;
+import com.hg.web.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +36,10 @@ public ResponseEntity<ResponseDTO<Void>> Joinprocess(UserDTO dto) {
 	// 비밀번호 유효성 검사
 	if(!InputValidator.pwdValCheck(dto.getPassword())) {
 		throw new InternalErrorException("유효하지 않은 입력입니다.", "pwdValidation 실패");
+	}
+	// 이름 유효성 검사
+	if(!InputValidator.nameValidation(dto.getName())) {
+		throw new InternalErrorException("유효하지 않은 입력입니다.", "nameValidation 실패");
 	}
 	String encodedPwd=bpe.encode(dto.getPassword()); // 	비밀번호 암호화
 	dto.setPassword(encodedPwd); 

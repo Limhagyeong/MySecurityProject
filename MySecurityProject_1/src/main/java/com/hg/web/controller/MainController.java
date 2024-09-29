@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hg.web.MySecurityProject1Application;
-import com.hg.web.service.SecSessionServiceImpl;
+import com.hg.web.service.impl.SecSessionServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;

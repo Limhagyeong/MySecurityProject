@@ -1,4 +1,4 @@
-package com.hg.web.service;
+package com.hg.web.service.impl;
 // DB로부터 username에 대한 검증을 마치고 데이터를 저장하여 dto로 넘긴다
 // dto에서는 전달받은 데이터를 가지고 시큐리티컨피그에서 넘기면 컨피그에서 검증하고 완료 후 스프링 세션에 데이터가 저장되게된다
 import org.springframework.security.core.userdetails.UserDetails;

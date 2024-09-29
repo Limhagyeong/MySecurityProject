@@ -76,6 +76,24 @@ public final class InputValidator {
 		return true;
 	}
 	
+	
+	// nameValidation
+	public static boolean nameValidation(String value) {
+		// 값이 존재하고 + 공백으로 시작하지 않으며 + 공백을 포함하지 않는지
+		if (!validateInput(value)) {
+			return false;
+		}
+		// 특수문자를 포함하지 않는지
+		if (containSpecialChar(value)) {
+			return false;
+		}
+		// 숫자를 포함하지 않는지
+		if(ContainNum(value)) {
+			return false;
+		}
+		return true;
+		
+	}
 	public static boolean validateInput(String value) {
 		// 값이 존재해야함
 		if(value==null || value.isEmpty()) {

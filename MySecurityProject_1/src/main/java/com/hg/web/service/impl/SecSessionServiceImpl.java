@@ -1,4 +1,4 @@
-package com.hg.web.service;
+package com.hg.web.service.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
