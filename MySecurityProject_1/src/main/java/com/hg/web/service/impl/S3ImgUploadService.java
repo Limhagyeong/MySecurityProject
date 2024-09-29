@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.hg.web.common.exception.BadRequestException;
@@ -26,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class S3ImgUploadService {
 	
 	private final AmazonS3 amazonS3;
-	
 	
 	@Value("${s3.bucket}")
 	private String bucket;
@@ -41,8 +39,9 @@ public class S3ImgUploadService {
 	// S3에 이미지 업로드
     private ResponseEntity<ResponseDTO<Void>> uploadImageToS3(MultipartFile image) throws IOException{
 		String originalFilename=image.getOriginalFilename();
-		String extention=originalFilename.substring(originalFilename.lastIndexOf(".")); // 확장자 추출
-		
+		String extension=originalFilename.substring(originalFilename.lastIndexOf(".")+1); // 확장자 추출
+
+		System.out.println(extension);
 		String s3FileName=UUID.randomUUID().toString().substring(0,10) + originalFilename; //  원본 파일명 유지 + 파일명 중복 방지
 		
 		InputStream is=image.getInputStream(); // InputStream => 파일의 데이터를 한줄씩 바이트 단위로 읽어들임 (데이터에 접근하는 방식)
@@ -50,15 +49,14 @@ public class S3ImgUploadService {
 		
 		
 		ObjectMetadata metaData=new ObjectMetadata();
-		metaData.setContentType("image/"+extention); // 파일 확장자
+		metaData.setContentType("image/"+extension); // 파일 확장자
 		metaData.setContentLength(bytes.length); // 파일 크기
 		ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(bytes);
 		
 		try {
-			
+			bucket=bucket.trim();
 			PutObjectRequest putObjectRequest=
-					new PutObjectRequest(bucket, s3FileName, byteArrayInputStream, metaData)
-					   .withCannedAcl(CannedAccessControlList.PublicRead);
+					new PutObjectRequest(bucket, s3FileName, byteArrayInputStream, metaData);
 			amazonS3.putObject(putObjectRequest); // 이미지를 S3에 저장
 			
 		}catch(Exception e) {
