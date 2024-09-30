@@ -4,9 +4,9 @@ package com.hg.web.service.impl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.hg.web.common.exception.AuthenticationException;
 import com.hg.web.dto.CustomUserDetails;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.mapper.UserMapper;
@@ -25,9 +25,8 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 		UserDTO data=membermapper.idCheck(username);
 			
 			if (data==null) {
-				System.out.println("사용자를 찾을 수 없습니다: " + username);
 	            // 예외를 던져서 사용자 정보를 찾지 못했음을 알림
-	            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다");
+	            throw new AuthenticationException("사용자를 찾을 수 없습니다.");
 	}
 			 return new CustomUserDetails(data);
 

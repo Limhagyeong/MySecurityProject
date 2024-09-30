@@ -12,12 +12,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.hg.web.common.handler.CustomAuthenticationFailureHandler;
+import com.hg.web.common.handler.GlobalExceptionHandler;
+
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration{
+	
+	private final CustomAuthenticationFailureHandler customerauthenticationfailirehandler;
 	
 	@Bean
 	public BCryptPasswordEncoder bcPwd() {
@@ -37,7 +44,8 @@ public class SecurityConfiguration{
 		 http
          		 .formLogin((auth) -> auth
                  .loginProcessingUrl("/api/loginProcess") 
-                 .defaultSuccessUrl("/api", true)
+                 .failureHandler(customerauthenticationfailirehandler) // 로그인 실패 시 예외처리
+                 .defaultSuccessUrl("/api")
                  .permitAll() 
          );
 		 
