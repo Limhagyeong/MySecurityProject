@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -25,7 +26,6 @@ public class SecurityConfiguration{
 	
 	@Bean
 	public SecurityFilterChain filter(HttpSecurity http) throws Exception{
-		
 		http 
 				.authorizeHttpRequests((auth)->auth
 						.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
@@ -35,14 +35,14 @@ public class SecurityConfiguration{
 						);
 		
 		 http
-         .formLogin((auth) -> auth.loginPage("/api/login") 
+         		 .formLogin((auth) -> auth
                  .loginProcessingUrl("/api/loginProcess") 
                  .defaultSuccessUrl("/api", true)
                  .permitAll() 
          );
 		 
 		 http
-         .csrf((auth) -> auth.disable());
+         		 .csrf((auth) -> auth.disable());
 		 
 		//cors 관련 설정 
 	       http
@@ -57,15 +57,14 @@ public class SecurityConfiguration{
 	                configuration.setAllowCredentials(true);
 	                configuration.setAllowedHeaders(Collections.singletonList("*"));
 	                configuration.setMaxAge(3600L);
-
 	                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
 
 	                return configuration;
 				}
 	        })));
-	       	
 		
 		return http.build();
 	}
 
 }
+

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ResponseDTO<T> {
-	
+
 	private boolean success;
 	private int code;
 	private String message;

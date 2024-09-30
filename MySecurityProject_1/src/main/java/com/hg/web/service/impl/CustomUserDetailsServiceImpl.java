@@ -20,7 +20,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) {
-		
+
 		// DB로부터 username을 검증하여 데이터를 담음
 		UserDTO data=membermapper.idCheck(username);
 			

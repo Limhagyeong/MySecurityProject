@@ -65,7 +65,7 @@ public class S3ImgUploadService {
 			is.close();
 		}
 
-		amazonS3.getUrl(bucket, s3FileName).toString();
+//		amazonS3.getUrl(bucket, s3FileName).toString();
 		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 				
 	}
