@@ -1,5 +1,6 @@
 package com.hg.web.controller;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.hg.web.common.InputValidator;
-import com.hg.web.common.TempRandomChar;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
 import com.hg.web.dto.MailAuthDTO;
@@ -19,19 +19,21 @@ import com.hg.web.dto.ResponseDTO;
 import com.hg.web.dto.UserDTO;
 import com.hg.web.service.MemberService;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.xml.ws.RespectBinding;
 import lombok.RequiredArgsConstructor;
 
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
-public class MemberController<T>{
+public class MemberController{
 	
 	private final MemberService memberService;
-	private final TempRandomChar r;
+	
+	// 로그인 세션 확인
+	@GetMapping()
+	public ResponseEntity<ResponseDTO<Map<String, String>>> loginStatus(){
+		return memberService.secSession();
+	}
 	
 	// 회원가입
 	@PostMapping
@@ -96,5 +98,7 @@ public class MemberController<T>{
 	public ResponseEntity<ResponseDTO<Void>> mailAuthVal(@RequestBody MailAuthDTO dto){
 		return memberService.mailAuthOK(dto);
 	}
+	
+
 
 };

@@ -30,10 +30,8 @@ public class GlobalExceptionHandler  {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ResponseDTO<Void>> handleNotFoundException(AuthenticationException e) {
     	log.error("NotFoundException: {}",e.getMessage(), e);
-    	
-    	ResponseDTO<Void> responseApi=new ResponseDTO<>(HttpStatus.NOT_FOUND.value(), e.getMessage());
-    	
-    	return new ResponseEntity<>(responseApi, HttpStatus.NOT_FOUND);
+    	ResponseDTO<Void> responseApi=new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+    	return new ResponseEntity<>(responseApi, HttpStatus.UNAUTHORIZED);
     }
     
     //Validation

@@ -1,12 +1,21 @@
 package com.hg.web.service.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hg.web.common.InputValidator;
 import com.hg.web.common.TempRandomChar;
+import com.hg.web.common.exception.AuthenticationException;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
 import com.hg.web.dto.MailAuthDTO;
@@ -120,6 +129,31 @@ public ResponseEntity<ResponseDTO<Void>> mailAuthOK(MailAuthDTO dto) {
 	return mailService.mailAuthValidation(dto);
 }
 
+@Override
+public ResponseEntity<ResponseDTO<Map<String, String>>> secSession() {
+	// TODO Auto-generated method stub
+	String id=SecurityContextHolder.getContext().getAuthentication().getName(); // 스프링 세션 아이디
+	
+	// 인증 정보
+	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+	// 권한 정보
+	Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+	Iterator<? extends GrantedAuthority> iter = authorities.iterator();
+	
+	GrantedAuthority auth = iter.next();
+	String role = auth.getAuthority(); // 스프링 세션 롤
+    
+    if(!role.equals("ROLE_ADMIN") && !role.equals("ROLE_USER")) {
+    	throw new AuthenticationException("로그인 전");
+    }
+	
+	Map<String, String> responseData = new HashMap<>();
+    responseData.put("id", id);
+    responseData.put("role", role);
+
+    
+    return new ResponseEntity<ResponseDTO<Map<String, String>>> (new ResponseDTO<>(responseData), HttpStatus.OK);
+}
 }
 
