@@ -50,6 +50,14 @@ public class SecurityConfiguration{
          );
 		 
 		 http
+		 		.logout((auth) -> auth
+		 	    .logoutUrl("/api/logout")
+		 	    .logoutSuccessUrl("/api/loginProcess")
+		 	    .invalidateHttpSession(true) // 세션 무효화
+		 	    .deleteCookies("JSESSIONID") // 쿠키 삭제
+		 );
+		 
+		 http
          		 .csrf((auth) -> auth.disable());
 		 
 		//cors 관련 설정 
@@ -70,6 +78,8 @@ public class SecurityConfiguration{
 	                return configuration;
 				}
 	        })));
+	       
+	       
 		
 		return http.build();
 	}
