@@ -30,15 +30,16 @@ public class S3ImgUploadService {
 	private String bucket;
 	
 	public ResponseEntity<ResponseDTO<Void>> upload(MultipartFile image) throws IOException {
-	    if(image.isEmpty() || Objects.isNull(image.getOriginalFilename())){
-	      throw new BadRequestException("업로드할 파일이 없습니다. 파일을 선택해주세요");
+	    if(image==null || image.isEmpty() || Objects.isNull(image.getOriginalFilename())){
+	      throw new BadRequestException("업로드할 파일이 없습니다.");
 	    }
 	    return this.uploadImageToS3(image);
 	  }
 	
 	// S3에 이미지 업로드
     private ResponseEntity<ResponseDTO<Void>> uploadImageToS3(MultipartFile image) throws IOException{
-		String originalFilename=image.getOriginalFilename();
+    	
+    	String originalFilename=image.getOriginalFilename();
 		String extension=originalFilename.substring(originalFilename.lastIndexOf(".")+1); // 확장자 추출
 
 		System.out.println(extension);
@@ -65,7 +66,7 @@ public class S3ImgUploadService {
 			is.close();
 		}
 
-//		amazonS3.getUrl(bucket, s3FileName).toString();
+		System.out.println(amazonS3.getUrl(bucket, s3FileName).toString());
 		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
 				
 	}

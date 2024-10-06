@@ -30,7 +30,7 @@ public class MemberController{
 	private final MemberService memberService;
 	
 	// 로그인 세션 확인
-	@GetMapping()
+	@GetMapping
 	public ResponseEntity<ResponseDTO<Map<String, String>>> loginStatus(){
 		return memberService.secSession();
 	}
@@ -86,19 +86,5 @@ public class MemberController{
 	        throw new BadRequestException("잘못된 요청입니다.");
 	    }
 	}
-	
-	// 이메일 인증 코드 발송
-	@PostMapping("/sendMailAuth")
-	public ResponseEntity<ResponseDTO<Void>> sendAuthMail(@RequestBody MailAuthDTO dto){
-		return memberService.mailAuth(dto.getEmail());
-	   
-	}
-	// 이메일 인증 여부
-	@PostMapping("/mailAuthVal")
-	public ResponseEntity<ResponseDTO<Void>> mailAuthVal(@RequestBody MailAuthDTO dto){
-		return memberService.mailAuthOK(dto);
-	}
-	
-
 
 };

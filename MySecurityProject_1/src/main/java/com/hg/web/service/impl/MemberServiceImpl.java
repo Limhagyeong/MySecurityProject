@@ -32,7 +32,6 @@ import lombok.RequiredArgsConstructor;
 public class MemberServiceImpl implements MemberService {
 
 private final UserMapper usermapper;
-private final MailAuthMapper mailauthmapper;
 private final BCryptPasswordEncoder bpe;
 private final MailServiceImpl mailService;
 
@@ -129,6 +128,7 @@ public ResponseEntity<ResponseDTO<Void>> mailAuthOK(MailAuthDTO dto) {
 	return mailService.mailAuthValidation(dto);
 }
 
+// session Id, Role
 @Override
 public ResponseEntity<ResponseDTO<Map<String, String>>> secSession() {
 	// TODO Auto-generated method stub
