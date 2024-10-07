@@ -3,7 +3,7 @@ package com.hg.web.common;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.hg.web.mapper.MailAuthMapper;
+import com.hg.web.mapper.util.MailAuthMapper;
 
 import lombok.RequiredArgsConstructor;
 

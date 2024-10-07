@@ -1,9 +1,9 @@
-package com.hg.web.mapper;
+package com.hg.web.mapper.util;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.hg.web.dto.MailAuthDTO;
-import com.hg.web.dto.UserDTO;
+import com.hg.web.dto.member.UserDTO;
+import com.hg.web.dto.util.MailAuthDTO;
 
 @Mapper
 public interface MailAuthMapper {

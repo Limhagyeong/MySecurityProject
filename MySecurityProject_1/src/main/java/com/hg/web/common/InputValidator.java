@@ -1,7 +1,5 @@
 package com.hg.web.common;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Pattern;
 // 입력값에 대한 1차 유효성 검사는 프론트에서 진행하고
 // 2차적으로 서버에서 한번 더 막음 

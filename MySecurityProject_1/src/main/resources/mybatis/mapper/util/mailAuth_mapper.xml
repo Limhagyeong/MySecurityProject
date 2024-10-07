@@ -3,7 +3,7 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
-  <mapper namespace="com.hg.web.mapper.MailAuthMapper">
+  <mapper namespace="com.hg.web.mapper.util.MailAuthMapper">
  	
  	<!-- 이메일 인증 이력 저장 -->
  	<insert id="mailAuthCode" parameterType="MailAuthDTO">

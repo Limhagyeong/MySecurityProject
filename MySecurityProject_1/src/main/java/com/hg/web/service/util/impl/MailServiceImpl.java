@@ -1,4 +1,4 @@
-package com.hg.web.service.impl;
+package com.hg.web.service.util.impl;
 
 import java.time.LocalDateTime;
 
@@ -16,12 +16,12 @@ import com.hg.web.common.InputValidator;
 import com.hg.web.common.TempRandomChar;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
-import com.hg.web.dto.MailAuthDTO;
-import com.hg.web.dto.ResponseDTO;
-import com.hg.web.dto.UserDTO;
-import com.hg.web.mapper.MailAuthMapper;
-import com.hg.web.mapper.UserMapper;
-import com.hg.web.service.MailService;
+import com.hg.web.dto.api.ResponseDTO;
+import com.hg.web.dto.member.UserDTO;
+import com.hg.web.dto.util.MailAuthDTO;
+import com.hg.web.mapper.member.UserMapper;
+import com.hg.web.mapper.util.MailAuthMapper;
+import com.hg.web.service.util.MailService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

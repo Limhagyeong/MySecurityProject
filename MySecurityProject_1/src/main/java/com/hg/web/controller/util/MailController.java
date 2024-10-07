@@ -1,4 +1,4 @@
-package com.hg.web.controller;
+package com.hg.web.controller.util;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hg.web.dto.MailAuthDTO;
-import com.hg.web.dto.ResponseDTO;
-import com.hg.web.service.MemberService;
+import com.hg.web.dto.api.ResponseDTO;
+import com.hg.web.dto.util.MailAuthDTO;
+import com.hg.web.service.member.MemberService;
 
 import lombok.RequiredArgsConstructor;
 

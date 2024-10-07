@@ -59,7 +59,10 @@ public class SecurityConfiguration{
 		http 
 				.authorizeHttpRequests((auth)->auth
 						.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-						.requestMatchers("/api/login","/api/loginProcess","/api/members/**","/api/mail/**").permitAll() // 회원가입, 로그인, 메일
+						.requestMatchers("/api/login",
+										 "/api/loginProcess",
+										 "/api/members/**",
+										 "/api/mail/**").permitAll() // 회원가입, 로그인, 메일
 //						.requestMatchers("/api/s3/**").hasAnyRole("USER","ADMIN")
 						.anyRequest().authenticated() // 나머지는 권한이 필요함
 				)

@@ -1,4 +1,4 @@
-package com.hg.web.service.impl;
+package com.hg.web.service.member.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,12 +18,13 @@ import com.hg.web.common.TempRandomChar;
 import com.hg.web.common.exception.AuthenticationException;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
-import com.hg.web.dto.MailAuthDTO;
-import com.hg.web.dto.ResponseDTO;
-import com.hg.web.dto.UserDTO;
-import com.hg.web.mapper.MailAuthMapper;
-import com.hg.web.mapper.UserMapper;
-import com.hg.web.service.MemberService;
+import com.hg.web.dto.api.ResponseDTO;
+import com.hg.web.dto.member.UserDTO;
+import com.hg.web.dto.util.MailAuthDTO;
+import com.hg.web.mapper.member.UserMapper;
+import com.hg.web.mapper.util.MailAuthMapper;
+import com.hg.web.service.member.MemberService;
+import com.hg.web.service.util.impl.MailServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 

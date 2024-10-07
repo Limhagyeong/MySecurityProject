@@ -1,4 +1,4 @@
-package com.hg.web.dto;
+package com.hg.web.dto.member;
 
 
 import java.util.Date;
@@ -48,7 +48,5 @@ public class UserDTO {
 	private Date joindate;
 	
 	private String role;
-	
-	// 난수 발생
-	
+
 }

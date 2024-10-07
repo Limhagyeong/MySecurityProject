@@ -2,13 +2,15 @@ package com.hg.web.common.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import com.hg.web.common.exception.AuthenticationException;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
-import com.hg.web.dto.ResponseDTO;
+import com.hg.web.dto.api.ResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +31,7 @@ public class GlobalExceptionHandler  {
     // 401
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ResponseDTO<Void>> handleNotFoundException(AuthenticationException e) {
-    	log.error("NotFoundException: {}",e.getMessage(), e);
+    	log.error("UnAuthorizedException: {}",e.getMessage(), e);
     	ResponseDTO<Void> responseApi=new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
     	return new ResponseEntity<>(responseApi, HttpStatus.UNAUTHORIZED);
     }
@@ -43,6 +45,17 @@ public class GlobalExceptionHandler  {
 
         return new ResponseEntity<>(responseApi, HttpStatus.BAD_REQUEST);
     }
+    
+    // Validation 실패 오류 처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseDTO<Void>> handleValidationException(MethodArgumentNotValidException e) {
+        log.error("ValidationException: {}", e.getMessage(), e);
+
+        ResponseDTO<Void> responseApi = new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(),"잘못된 입력값입니다.");
+
+        return new ResponseEntity<>(responseApi, HttpStatus.BAD_REQUEST);
+    }
+    
 
 }
 

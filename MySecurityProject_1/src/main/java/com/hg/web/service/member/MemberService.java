@@ -1,12 +1,12 @@
-package com.hg.web.service;
+package com.hg.web.service.member;
 
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 
-import com.hg.web.dto.MailAuthDTO;
-import com.hg.web.dto.ResponseDTO;
-import com.hg.web.dto.UserDTO;
+import com.hg.web.dto.api.ResponseDTO;
+import com.hg.web.dto.member.UserDTO;
+import com.hg.web.dto.util.MailAuthDTO;
 
 
 public interface MemberService {

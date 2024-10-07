@@ -1,4 +1,4 @@
-package com.hg.web.dto;
+package com.hg.web.dto.util;
 
 import java.time.LocalDateTime;
 

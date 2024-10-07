@@ -1,4 +1,4 @@
-package com.hg.web.dto;
+package com.hg.web.dto.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.hg.web.dto.member.UserDTO;
 
 import lombok.RequiredArgsConstructor;
 

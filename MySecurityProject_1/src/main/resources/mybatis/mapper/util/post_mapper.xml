@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="com.hg.web.mapper.util.PostMapper">
+ 
+ <!-- 게시물 저장 => useGeneratedKeys="true" keyProperty="p_num"를 통해 DB에 저장된 p_num을 DTO p_num 필드에 저장 -->
+ <insert id="insertContent" parameterType="PostDTO" useGeneratedKeys="true" keyProperty="p_num">
+ 	INSERT INTO posting (content, id)
+	SELECT #{p_content}, id FROM myjoin WHERE username = #{username}
+ </insert>
+ 
+ <!-- S3 이미지 URL 저장 -->
+ <insert id="insertImgUrl" parameterType="PostDTO">
+ 	INSERT INTO posting_img (p_num,p_img_url)
+ 	VALUES(#{p_num},#{p_img_url})
+ </insert>
+ 
+ <!-- S3 업로드 실패 시 URL 삭제  -->
+ <delete id="deleteImgUrl" parameterType="PostDTO">
+ 	DELETE FROM posting_img
+ 	WHERE p_num = #{p_num}
+ </delete>
+ </mapper>

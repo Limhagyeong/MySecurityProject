@@ -1,4 +1,4 @@
-package com.hg.web.dto;
+package com.hg.web.dto.api;
 
 import lombok.Data;
 
