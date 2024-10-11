@@ -8,7 +8,7 @@
  <!-- 게시물 저장 => useGeneratedKeys="true" keyProperty="p_num"를 통해 DB에 저장된 p_num을 DTO p_num 필드에 저장 -->
  <insert id="insertContent" parameterType="PostDTO" useGeneratedKeys="true" keyProperty="p_num">
  	INSERT INTO posting (content, id)
-	SELECT #{p_content}, id FROM myjoin WHERE username = #{username}
+	VALUES (#{p_content}, (SELECT id FROM myjoin WHERE username = #{username}))
  </insert>
  
  <!-- S3 이미지 URL 저장 -->
@@ -22,4 +22,12 @@
  	DELETE FROM posting_img
  	WHERE p_num = #{p_num}
  </delete>
+ 
+ <!-- 게시물 수정 -->
+ <update id="updateContent" parameterType="PostDTO">
+ 	UPDATE posting
+ 	SET content = #{p_content}
+ 	WHERE p_num = #{p_num}
+ </update>
+ 
  </mapper>

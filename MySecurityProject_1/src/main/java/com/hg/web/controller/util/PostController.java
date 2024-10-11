@@ -17,11 +17,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")
-public class S3ImgUploadController {
+public class PostController {
 	
 	private final PostService postingService;
 	
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<ResponseDTO<Void>> posting(@RequestParam(value="p_img", required = false) MultipartFile p_img, 
 												     @RequestParam(value="p_content", required = false) String content,
 												     @RequestParam(value = "username", required = false) String username)
@@ -36,7 +36,7 @@ public class S3ImgUploadController {
 		postDTO.setP_content(content);
 		postDTO.setUsername(username);
 		
-		return postingService.uploadPosting(postDTO);
+		return postingService.insertPosting(postDTO);
 	}
 
 	

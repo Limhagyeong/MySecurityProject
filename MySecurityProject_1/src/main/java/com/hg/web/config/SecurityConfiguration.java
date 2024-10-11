@@ -42,7 +42,7 @@ public class SecurityConfiguration{
 			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 				// TODO Auto-generated method stub
 				CorsConfiguration configuration = new CorsConfiguration();
-
+				
 				configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));// 3000번 포트 허용
 				configuration.setAllowedMethods(Collections.singletonList("*"));// 모든메소드 허용
 				configuration.setAllowCredentials(true);
@@ -58,28 +58,27 @@ public class SecurityConfiguration{
 		// 접근 권한 설정
 		http 
 				.authorizeHttpRequests((auth)->auth
-						.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-						.requestMatchers("/api/login",
-										 "/api/loginProcess",
+						.requestMatchers("/api/loginProcess",
 										 "/api/members/**",
 										 "/api/mail/**").permitAll() // 회원가입, 로그인, 메일
-//						.requestMatchers("/api/s3/**").hasAnyRole("USER","ADMIN")
 						.anyRequest().authenticated() // 나머지는 권한이 필요함
-				)
-		
-		.exceptionHandling(exceptions -> 
-        exceptions.authenticationEntryPoint((request, response, authException) -> {
-            // 인증되지 않은 사용자의 접근 시 401 반환
-            response.setContentType("application/json; charset=UTF-8");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            String json = "{\"message\": \"로그인이 필요한 서비스입니다.\", \"code\": \"401\"}";
-            response.getWriter().write(json);
-            response.getWriter().flush();
-        })
-    );
+						)
+						
+						.exceptionHandling(exceptions -> 
+				        exceptions.authenticationEntryPoint((request, response, authException) -> {
+				            // 인증되지 않은 사용자의 접근 시 401 반환
+				            response.setContentType("application/json; charset=UTF-8");
+				            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				            String json = "{\"message\": \"로그인이 필요한 서비스입니다.\", \"code\": \"401\"}";
+				            response.getWriter().write(json);
+				            response.getWriter().flush();
+				        })
+				);
+
 				
 		 http
          		 .formLogin((auth) -> auth
+         		 .loginPage("http://localhost:3000/login")
                  .loginProcessingUrl("/api/loginProcess") 
                  .failureHandler(customerauthenticationfailirehandler) // 로그인 실패 시 예외처리
                  .defaultSuccessUrl("http://localhost:3000/", true) 

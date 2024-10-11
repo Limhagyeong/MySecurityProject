@@ -37,25 +37,25 @@ public class PostServiceImpl implements PostService{
 
 	@Override
 	@Transactional
-	public ResponseEntity<ResponseDTO<Void>> uploadPosting(PostDTO postDTO) {
+	public ResponseEntity<ResponseDTO<Void>> insertPosting(PostDTO postDTO) {
 		try{
 			postingmapper.insertContent(postDTO); // content DB 저장
-			System.out.println(postDTO.getP_num());
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 
-		return this.uploadImg(postDTO); // S3 이미지 업로드
+		return this.insertImgUrl(postDTO); // S3 이미지 업로드
 	}
-
+	
+	// S3에 이미지 업로드
 	@Override
-	public ResponseEntity<ResponseDTO<Void>> uploadImg(PostDTO postDTO){
+	public ResponseEntity<ResponseDTO<Void>> insertImgUrl(PostDTO postDTO){
 	    
 	    return this.uploadImageToS3(postDTO);
 	    
 	  }
 	
-	// S3에 이미지 업로드
+	
 	private ResponseEntity<ResponseDTO<Void>> uploadImageToS3(PostDTO postDTO){
     	
     	String originalFilename=postDTO.getP_img().getOriginalFilename();
@@ -87,8 +87,8 @@ public class PostServiceImpl implements PostService{
 			postingmapper.insertImgUrl(postDTO);
 		} catch (Exception e) {
 			// S3 업로드 중 문제가 발생한 경우 예외 발생시켜 롤백 기능 수행
-						postingmapper.deleteImgUrl(postDTO);
-						throw new RuntimeException("S3 업로드 실패: " + e.getMessage());
+			postingmapper.deleteImgUrl(postDTO);
+			throw new RuntimeException("S3 업로드 실패: " + e.getMessage());
 		}finally {
 			if (is != null) {
 	            try {
@@ -98,9 +98,23 @@ public class PostServiceImpl implements PostService{
 	            }
 	        }
 		}
-		
-		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 
-				
+		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 		
 	}
+
+	// 포스트 업데이트
+	@Override
+	public ResponseEntity<ResponseDTO<Void>> updatePosting(PostDTO postDTO) {
+		// TODO Auto-generated method stub
+		try{
+			postingmapper.updateContent(postDTO); // content 업데이트
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 	
+	}
+	
+	// 이미지 삭제
+	
 
 }

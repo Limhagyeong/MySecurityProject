@@ -9,8 +9,10 @@ import com.hg.web.dto.util.PostDTO;
 
 @Service
 public interface PostService {
-	ResponseEntity<ResponseDTO<Void>> uploadPosting(PostDTO postDTO); 
+	ResponseEntity<ResponseDTO<Void>> insertPosting(PostDTO postDTO); 
 	// 포스트 업로드
-	ResponseEntity<ResponseDTO<Void>> uploadImg(PostDTO postDTO); 
+	ResponseEntity<ResponseDTO<Void>> insertImgUrl(PostDTO postDTO); 
 	// 이미지 파일 S3에 업로드	
+	ResponseEntity<ResponseDTO<Void>> updatePosting(PostDTO postDTO);
+	// 포스트 업데이트
 }
