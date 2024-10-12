@@ -6,27 +6,44 @@
  <mapper namespace="com.hg.web.mapper.util.PostMapper">
  
  <!-- 게시물 저장 => useGeneratedKeys="true" keyProperty="p_num"를 통해 DB에 저장된 p_num을 DTO p_num 필드에 저장 -->
- <insert id="insertContent" parameterType="PostDTO" useGeneratedKeys="true" keyProperty="p_num">
- 	INSERT INTO posting (content, id)
-	VALUES (#{p_content}, (SELECT id FROM myjoin WHERE username = #{username}))
+ <insert id="insertContent" parameterType="PostInsertDTO" useGeneratedKeys="true" keyProperty="p_num">
+ 	INSERT INTO posting (content, id, p_date)
+	VALUES (#{content}, (SELECT id FROM myjoin WHERE username = #{username}),NOW())
  </insert>
  
  <!-- S3 이미지 URL 저장 -->
- <insert id="insertImgUrl" parameterType="PostDTO">
- 	INSERT INTO posting_img (p_num,p_img_url)
+ <insert id="insertImgUrl" parameterType="PostInsertDTO">
+ 	INSERT INTO posting_img (p_num, p_img_url)
  	VALUES(#{p_num},#{p_img_url})
  </insert>
  
  <!-- S3 업로드 실패 시 URL 삭제  -->
- <delete id="deleteImgUrl" parameterType="PostDTO">
+ <delete id="deleteImgUrl" parameterType="PostInsertDTO">
  	DELETE FROM posting_img
  	WHERE p_num = #{p_num}
  </delete>
  
+ <!-- 게시물 get -->
+ <select id="selectPost" resultType="PostSelectDTO" parameterType="String">
+ 	SELECT p.p_num AS pNum, 
+ 		   p.id AS id, 
+ 		   p.content AS content, 
+ 		   p.p_date AS date, 
+ 		   pi.p_img_url AS imgUrl
+ 	FROM posting p
+ 	LEFT JOIN posting_img pi
+ 	ON p.p_num = pi.p_num
+ 	WHERE p.id = (
+ 				   SELECT id 
+				   FROM myjoin 
+				   WHERE username = #{username}
+				 )
+ </select>
+
  <!-- 게시물 수정 -->
- <update id="updateContent" parameterType="PostDTO">
+ <update id="updateContent" parameterType="PostInsertDTO">
  	UPDATE posting
- 	SET content = #{p_content}
+ 	SET content = #{content}
  	WHERE p_num = #{p_num}
  </update>
  

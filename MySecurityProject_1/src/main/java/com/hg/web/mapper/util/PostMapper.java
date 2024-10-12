@@ -1,19 +1,23 @@
 package com.hg.web.mapper.util;
 
 import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
 
-import com.hg.web.dto.util.PostDTO;
+import com.hg.web.dto.util.PostInsertDTO;
+import com.hg.web.dto.util.PostSelectDTO;
 
 @Mapper
 public interface PostMapper {
-	void insertContent(PostDTO postDTO);
+	void insertContent(PostInsertDTO postDTO);
 	// 게시물 내용 insert
-	void insertImgUrl(PostDTO postDTO);
+	void insertImgUrl(PostInsertDTO postDTO);
 	// 게시물 이미지 insert
-	void updateContent(PostDTO postDTO);
+	void updateContent(PostInsertDTO postDTO);
 	// 게시물 내용 update
-	void updateImgUrl(PostDTO postDTO);
+	void updateImgUrl(PostInsertDTO postDTO);
 	// 게시물 이미지 update
-
-	void deleteImgUrl(PostDTO postDTO);
+	List<PostSelectDTO> selectPost(String username);
+	// 게시물 출력
+	void deleteImgUrl(PostInsertDTO postDTO);
+	// 이미지 삭제
 }
