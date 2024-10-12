@@ -31,13 +31,12 @@
  		   p.p_date AS date, 
  		   pi.p_img_url AS imgUrl
  	FROM posting p
- 	LEFT JOIN posting_img pi
+ 	JOIN posting_img pi
  	ON p.p_num = pi.p_num
- 	WHERE p.id = (
- 				   SELECT id 
-				   FROM myjoin 
-				   WHERE username = #{username}
-				 )
+ 	JOIN myjoin m
+ 	ON m.id = p.id
+	WHERE username = #{username}
+	ORDER BY p.p_date DESC 
  </select>
 
  <!-- 게시물 수정 -->
