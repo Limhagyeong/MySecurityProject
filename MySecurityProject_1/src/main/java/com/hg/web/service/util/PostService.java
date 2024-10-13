@@ -12,12 +12,15 @@ import com.hg.web.dto.util.PostSelectDTO;
 
 @Service
 public interface PostService {
-	ResponseEntity<ResponseDTO<Void>> insertPosting(PostInsertDTO postDTO); 
 	// 게시물 업로드
-	ResponseEntity<ResponseDTO<Void>> insertImgUrl(PostInsertDTO postDTO); 
+	ResponseEntity<ResponseDTO<Void>> insertPosting(PostInsertDTO postDTO); 
 	// 이미지 파일 S3에 업로드	
-	ResponseEntity<ResponseDTO<List<PostSelectDTO>>> selectPost(String username);
+	ResponseEntity<ResponseDTO<Void>> insertImgUrl(PostInsertDTO postDTO); 
 	// 게시물 출력
-	ResponseEntity<ResponseDTO<Void>> updatePosting(PostInsertDTO postDTO);
+	ResponseEntity<ResponseDTO<List<PostSelectDTO>>> selectPost(String username);
 	// 게시물 업데이트
+	ResponseEntity<ResponseDTO<Void>> updatePosting(PostInsertDTO postDTO);
+	// 게시물 삭제
+	ResponseEntity<ResponseDTO<Void>> deletePosting(int pNum);
+	
 }

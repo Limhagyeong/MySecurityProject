@@ -38,6 +38,7 @@ public class PostServiceImpl implements PostService{
 	private String bucket;
 	
 
+	// 게시물 작성
 	@Override
 	@Transactional
 	public ResponseEntity<ResponseDTO<Void>> insertPosting(PostInsertDTO postDTO) {
@@ -112,7 +113,18 @@ public class PostServiceImpl implements PostService{
 		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 		
 	}
 
-	// 포스트 업데이트
+	// 게시물 리스트
+	@Override
+	public ResponseEntity<ResponseDTO<List<PostSelectDTO>>> selectPost(String username) {
+		// TODO Auto-generated method stub
+		
+		List<PostSelectDTO> data=postingmapper.selectPost(username);
+		
+		return new ResponseEntity<ResponseDTO<List<PostSelectDTO>>> (new ResponseDTO<List<PostSelectDTO>>(data),HttpStatus.OK);
+	}
+	
+
+	// 게시물 업데이트
 	@Override
 	public ResponseEntity<ResponseDTO<Void>> updatePosting(PostInsertDTO postDTO) {
 		// TODO Auto-generated method stub
@@ -125,16 +137,25 @@ public class PostServiceImpl implements PostService{
 		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 	
 	}
 
+	// 게시물 삭제
 	@Override
-	public ResponseEntity<ResponseDTO<List<PostSelectDTO>>> selectPost(String username) {
+	public ResponseEntity<ResponseDTO<Void>> deletePosting(int pNum) {
 		// TODO Auto-generated method stub
-		
-		List<PostSelectDTO> data=postingmapper.selectPost(username);
-		
-		return new ResponseEntity<ResponseDTO<List<PostSelectDTO>>> (new ResponseDTO<List<PostSelectDTO>>(data),HttpStatus.OK);
+		try {
+			// S3 버킷 이미지 삭제
+			String imgUrl=postingmapper.S3imgUrl(pNum);
+			if(imgUrl!=null) {
+				 String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+		         amazonS3.deleteObject(bucket, s3FileName);
+			}
+			// DB 게시물 삭제
+			postingmapper.deleteContent(pNum);
+			// DB 이미지 삭제
+			postingmapper.deleteImg(pNum);
+			
+		}catch(Exception e) {
+			throw new BadRequestException("게시물 삭제 실패");
+		}
+		return new ResponseEntity<ResponseDTO<Void>>(new ResponseDTO<>(), HttpStatus.OK); 
 	}
-
-
-	
-
 }

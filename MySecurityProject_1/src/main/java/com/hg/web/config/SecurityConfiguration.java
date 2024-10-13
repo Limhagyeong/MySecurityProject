@@ -45,7 +45,7 @@ public class SecurityConfiguration{
 				
 				configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));// 3000번 포트 허용
 				configuration.setAllowedMethods(Collections.singletonList("*"));// 모든메소드 허용
-				configuration.setAllowCredentials(true);
+				configuration.setAllowCredentials(true); // 세션쿠키 허용
 				configuration.setAllowedHeaders(Collections.singletonList("*"));
 
 				return configuration;
@@ -92,6 +92,8 @@ public class SecurityConfiguration{
 	 	    .invalidateHttpSession(true) // 세션 무효화
 	 	    .deleteCookies("JSESSIONID") // 쿠키 삭제
 	    );
+	       
+	       
 	       
 	       
 		

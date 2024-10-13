@@ -17,10 +17,10 @@
  	VALUES(#{p_num},#{p_img_url})
  </insert>
  
- <!-- S3 업로드 실패 시 URL 삭제  -->
- <delete id="deleteImgUrl" parameterType="PostInsertDTO">
+ <!-- 게시물 업로드 실패 시 이미지 URL 삭제  -->
+ <delete id="deleteImgUrl" parameterType="int">
  	DELETE FROM posting_img
- 	WHERE p_num = #{p_num}
+ 	WHERE p_img_num = #{p_img_num}
  </delete>
  
  <!-- 게시물 get -->
@@ -40,10 +40,29 @@
  </select>
 
  <!-- 게시물 수정 -->
- <update id="updateContent" parameterType="PostInsertDTO">
+ <update id="updatePost" parameterType="PostInsertDTO">
  	UPDATE posting
  	SET content = #{content}
  	WHERE p_num = #{p_num}
  </update>
+ 
+ <!-- 게시물 삭제 -->
+ <delete id="deleteContent" parameterType="int">
+	DELETE FROM posting 
+	WHERE p_num = #{pNum};
+ </delete>
+ 
+ <!-- 게시물 이미지 삭제 -->
+ <delete id="deleteImg" parameterType="int">
+ 	DELETE FROM posting_img 
+	WHERE p_num = #{pNum};
+ </delete>
+ 
+ <!-- S3삭제를 위한 imgurl -->
+ <select id="S3imgUrl" resultType="String" parameterType="int">
+ 	SELECT p_img_url AS imgUrl
+ 	FROM posting_img
+ 	WHERE p_num = #{pNum}
+ </select>
  
  </mapper>
