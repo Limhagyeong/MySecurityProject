@@ -29,7 +29,8 @@
  		   p.id AS id, 
  		   p.content AS content, 
  		   p.p_date AS date, 
- 		   pi.p_img_url AS imgUrl
+ 		   pi.p_img_url AS imgUrl,
+ 		   m.username AS username
  	FROM posting p
  	JOIN posting_img pi
  	ON p.p_num = pi.p_num
@@ -42,7 +43,15 @@
  <!-- 게시물 수정 -->
  <update id="updatePost" parameterType="PostInsertDTO">
  	UPDATE posting
- 	SET content = #{content}
+ 	SET content = #{content}, 
+ 	    p_edit_date=NOW()
+ 	WHERE p_num = #{p_num}
+ </update>
+ 
+ <!-- 게시물 이미지 수정 -->
+ <update id="updateImg" parameterType="PostInsertDTO">
+ 	UPDATE posting_img
+ 	SET p_img_url = #{p_imgUrl}
  	WHERE p_num = #{p_num}
  </update>
  
@@ -58,7 +67,7 @@
 	WHERE p_num = #{pNum};
  </delete>
  
- <!-- S3삭제를 위한 imgurl -->
+ <!-- imgurl get -->
  <select id="S3imgUrl" resultType="String" parameterType="int">
  	SELECT p_img_url AS imgUrl
  	FROM posting_img

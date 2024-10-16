@@ -92,9 +92,16 @@ public class PostServiceImpl implements PostService{
 			amazonS3.putObject(putObjectRequest); // 이미지를 S3에 저장
 			
 			// 포스트 번호, 이미지 URL DB 저장
-			postDTO.setP_num(postDTO.getP_num());
-			postDTO.setP_img_url(amazonS3.getUrl(bucket, s3FileName).toString());
-			postingmapper.insertImgUrl(postDTO);
+			if("Y".equals(postDTO.getUpdated())) { // 수정 Update
+				// 
+				postDTO.setP_img_url(amazonS3.getUrl(bucket, s3FileName).toString());
+				postingmapper.updateImg(postDTO);
+			}else { // 최초 Insert
+				postDTO.setP_num(postDTO.getP_num());
+				postDTO.setP_img_url(amazonS3.getUrl(bucket, s3FileName).toString());
+				postingmapper.insertImgUrl(postDTO);
+			}
+			
 		} catch (Exception e) {
 			// S3에 업로드된 이미지 삭제
 	        if (s3FileName!=null) {
@@ -126,12 +133,25 @@ public class PostServiceImpl implements PostService{
 
 	// 게시물 업데이트
 	@Override
+	@Transactional
 	public ResponseEntity<ResponseDTO<Void>> updatePosting(PostInsertDTO postDTO) {
 		// TODO Auto-generated method stub
 		try{
-			postingmapper.updateContent(postDTO); // content 업데이트
+			System.out.println("업데이트 서비스");
+			// 이미지 변경 여부 확인
+			if("Y".equals(postDTO.getUpdated())) {
+				// 기존 S3 이미지 삭제 (DB url 바뀌기 전)
+				String currentImg=postingmapper.S3imgUrl(postDTO.getP_num());
+				amazonS3.deleteObject(bucket,currentImg );
+				// 바뀐 이미지 URL 생성 및 DB, S3 업데이트
+				uploadImageToS3(postDTO);		
+			}
+			System.out.println(postDTO.getContent());
+			System.out.println(postDTO.getP_num());
+			postingmapper.updatePost(postDTO);
+
 		}catch(Exception e) {
-			e.printStackTrace();
+			throw new BadRequestException("게시물 업데이트 실패");
 		}
 		
 		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 	

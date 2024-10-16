@@ -13,9 +13,9 @@ public interface PostMapper {
 	// 게시물 이미지 insert
 	void insertImgUrl(PostInsertDTO postDTO);
 	// 게시물 내용 update
-	void updateContent(PostInsertDTO postDTO);
+	void updatePost(PostInsertDTO postDTO);
 	// 게시물 이미지 update
-	void updateImgUrl(PostInsertDTO postDTO);
+	void updateImg(PostInsertDTO postDTO);
 	// 게시물 출력
 	List<PostSelectDTO> selectPost(String username);
 	// 이미지 삭제

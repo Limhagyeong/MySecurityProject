@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,8 @@ public class PostController {
 	@PostMapping
 	public ResponseEntity<ResponseDTO<Void>> post(@RequestParam(value="img", required = false) MultipartFile img, 
 												  @RequestParam(value="content", required = false) String content,
-												  @RequestParam(value = "username", required = false) String username)
+												  @RequestParam(value = "username", required = false) String username
+												  )
 	{
 		if (img==null||img.isEmpty()) 
 		{
@@ -41,7 +43,6 @@ public class PostController {
 		PostInsertDTO postDTO=new PostInsertDTO();
 		postDTO.setImg(img);
 		postDTO.setContent(content);
-		
 		postDTO.setUsername(username);
 		
 		return postingService.insertPosting(postDTO);
@@ -57,6 +58,26 @@ public class PostController {
 	@DeleteMapping("/{pNum}")
 	public ResponseEntity<ResponseDTO<Void>> deletePost(@PathVariable int pNum){
 		return postingService.deletePosting(pNum);
+	}
+	
+	@PatchMapping("/{pNum}")
+	public ResponseEntity<ResponseDTO<Void>> updatePost(@RequestParam(value="img", required = false) MultipartFile img, 
+			  										    @RequestParam(value="content", required = false) String content,
+			  										    @RequestParam(value="pNum", required = false) int pNum,
+			  										    @RequestParam(value = "updated", required = false) String updated)
+	
+	{
+		
+		PostInsertDTO postDTO=new PostInsertDTO();
+		if(img!=null&&!img.isEmpty()) {
+			postDTO.setImg(img);
+		}
+		
+		postDTO.setContent(content);
+		postDTO.setP_num(pNum);
+		postDTO.setUpdated(updated);
+		
+		return postingService.updatePosting(postDTO);
 	}
 
 	
