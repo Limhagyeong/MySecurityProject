@@ -1,4 +1,4 @@
-package com.hg.web.controller.util;
+package com.hg.web.controller.post;
 
 import java.util.List;
 
@@ -16,9 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.dto.api.ResponseDTO;
-import com.hg.web.dto.util.PostInsertDTO;
-import com.hg.web.dto.util.PostSelectDTO;
-import com.hg.web.service.util.PostService;
+import com.hg.web.dto.post.PostInsertDTO;
+import com.hg.web.dto.post.PostSelectDTO;
+import com.hg.web.service.post.beforeService;
+import com.hg.web.service.post.PostService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,7 +46,7 @@ public class PostController {
 		postDTO.setContent(content);
 		postDTO.setUsername(username);
 		
-		return postingService.insertPosting(postDTO);
+		return postingService.Posting(postDTO);
 	}
 	
 	@GetMapping("/{username}")
@@ -57,7 +58,7 @@ public class PostController {
 	
 	@DeleteMapping("/{pNum}")
 	public ResponseEntity<ResponseDTO<Void>> deletePost(@PathVariable int pNum){
-		return postingService.deletePosting(pNum);
+		return postingService.deletePost(pNum);
 	}
 	
 	@PatchMapping("/{pNum}")
@@ -72,12 +73,11 @@ public class PostController {
 		if(img!=null&&!img.isEmpty()) {
 			postDTO.setImg(img);
 		}
-		
 		postDTO.setContent(content);
 		postDTO.setP_num(pNum);
 		postDTO.setUpdated(updated);
 		
-		return postingService.updatePosting(postDTO);
+		return postingService.Posting(postDTO);
 	}
 
 	

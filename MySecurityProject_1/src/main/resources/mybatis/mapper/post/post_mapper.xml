@@ -3,7 +3,14 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
- <mapper namespace="com.hg.web.mapper.util.PostMapper">
+ <mapper namespace="com.hg.web.mapper.post.PostMapper">
+ 
+ <!-- 게시물 존재 여부 확인 -->
+ <select id="countPost" resultType="int" parameterType="int">
+ 	SELECT COUNT(*)
+ 	FROM posting
+ 	WHERE p_num = #{p_num}
+ </select>
  
  <!-- 게시물 저장 => useGeneratedKeys="true" keyProperty="p_num"를 통해 DB에 저장된 p_num을 DTO p_num 필드에 저장 -->
  <insert id="insertContent" parameterType="PostInsertDTO" useGeneratedKeys="true" keyProperty="p_num">
@@ -51,7 +58,7 @@
  <!-- 게시물 이미지 수정 -->
  <update id="updateImg" parameterType="PostInsertDTO">
  	UPDATE posting_img
- 	SET p_img_url = #{p_imgUrl}
+ 	SET p_img_url = #{p_img_url}
  	WHERE p_num = #{p_num}
  </update>
  

@@ -1,4 +1,4 @@
-package com.hg.web.service.util.impl;
+package com.hg.web.service.post.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,21 +10,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.dto.api.ResponseDTO;
-import com.hg.web.dto.util.PostInsertDTO;
-import com.hg.web.dto.util.PostSelectDTO;
-import com.hg.web.mapper.util.PostMapper;
-import com.hg.web.service.util.PostService;
+import com.hg.web.dto.post.PostInsertDTO;
+import com.hg.web.dto.post.PostSelectDTO;
+import com.hg.web.mapper.post.PostMapper;
+import com.hg.web.service.post.PostService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-// 클라이언트로부터 받은 이미지를 버킷에 올림
+
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService{
@@ -38,31 +37,37 @@ public class PostServiceImpl implements PostService{
 	private String bucket;
 	
 
-	// 게시물 작성
+	// 게시물 삽입, 수정
 	@Override
 	@Transactional
-	public ResponseEntity<ResponseDTO<Void>> insertPosting(PostInsertDTO postDTO) {
-		try{
-			postingmapper.insertContent(postDTO); // content DB 저장
-		}catch(Exception e) {
-			throw new RuntimeException("DB 저장 실패: " + e.getMessage()); // 롤백
+	public ResponseEntity<ResponseDTO<Void>> Posting(PostInsertDTO postDTO) {
+		
+		int pNum=postDTO.getP_num();
+		
+		if(postingmapper.countPost(pNum) == 0) { // 게시물이 없다면 content DB 저장
+			try{
+				postingmapper.insertContent(postDTO);
+			}catch(Exception e) {
+				throw new RuntimeException("DB 저장 실패: " + e.getMessage()); // 롤백
+			}
+			
+		}else { // 게시물이 있다면 기존 S3 객체 삭제
+			try {
+				
+				if("Y".equals(postDTO.getUpdated())) {
+					String imgUrl=postingmapper.S3imgUrl(pNum);
+					String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+				    amazonS3.deleteObject(bucket, s3FileName);
+				}
+				
+				postingmapper.updatePost(postDTO);
+				
+			}catch(Exception e) {
+				throw new RuntimeException("S3 수정 실패: " + e.getMessage()); // 롤백
+			}
 		}
-
-		return this.insertImgUrl(postDTO); // S3 이미지 업로드
+		return this.uploadImageToS3(postDTO); // S3 이미지 업로드
 	}
-	
-	// S3에 이미지 업로드
-	@Override
-	public ResponseEntity<ResponseDTO<Void>> insertImgUrl(PostInsertDTO postDTO){
-	    
-		try {
-	        return this.uploadImageToS3(postDTO);
-	    } catch (Exception e) {
-	        throw new RuntimeException("이미지 업로드 실패: " + e.getMessage()); // 롤백
-	    }
-	    
-	  }
-	
 	
 	private ResponseEntity<ResponseDTO<Void>> uploadImageToS3(PostInsertDTO postDTO){
     	
@@ -93,7 +98,7 @@ public class PostServiceImpl implements PostService{
 			
 			// 포스트 번호, 이미지 URL DB 저장
 			if("Y".equals(postDTO.getUpdated())) { // 수정 Update
-				// 
+				// DB URL 업데이트
 				postDTO.setP_img_url(amazonS3.getUrl(bucket, s3FileName).toString());
 				postingmapper.updateImg(postDTO);
 			}else { // 최초 Insert
@@ -130,36 +135,9 @@ public class PostServiceImpl implements PostService{
 		return new ResponseEntity<ResponseDTO<List<PostSelectDTO>>> (new ResponseDTO<List<PostSelectDTO>>(data),HttpStatus.OK);
 	}
 	
-
-	// 게시물 업데이트
-	@Override
-	@Transactional
-	public ResponseEntity<ResponseDTO<Void>> updatePosting(PostInsertDTO postDTO) {
-		// TODO Auto-generated method stub
-		try{
-			System.out.println("업데이트 서비스");
-			// 이미지 변경 여부 확인
-			if("Y".equals(postDTO.getUpdated())) {
-				// 기존 S3 이미지 삭제 (DB url 바뀌기 전)
-				String currentImg=postingmapper.S3imgUrl(postDTO.getP_num());
-				amazonS3.deleteObject(bucket,currentImg );
-				// 바뀐 이미지 URL 생성 및 DB, S3 업데이트
-				uploadImageToS3(postDTO);		
-			}
-			System.out.println(postDTO.getContent());
-			System.out.println(postDTO.getP_num());
-			postingmapper.updatePost(postDTO);
-
-		}catch(Exception e) {
-			throw new BadRequestException("게시물 업데이트 실패");
-		}
-		
-		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 	
-	}
-
 	// 게시물 삭제
 	@Override
-	public ResponseEntity<ResponseDTO<Void>> deletePosting(int pNum) {
+	public ResponseEntity<ResponseDTO<Void>> deletePost(int pNum) {
 		// TODO Auto-generated method stub
 		try {
 			// S3 버킷 이미지 삭제

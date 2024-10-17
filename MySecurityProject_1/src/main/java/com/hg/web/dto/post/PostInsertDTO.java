@@ -1,4 +1,4 @@
-package com.hg.web.dto.util;
+package com.hg.web.dto.post;
 
 import org.springframework.web.multipart.MultipartFile;
 
