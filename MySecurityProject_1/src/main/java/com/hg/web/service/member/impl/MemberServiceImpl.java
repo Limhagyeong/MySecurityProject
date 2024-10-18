@@ -129,7 +129,7 @@ public ResponseEntity<ResponseDTO<Void>> mailAuthOK(MailAuthDTO dto) {
 	return mailService.mailAuthValidation(dto);
 }
 
-// session Id, Role
+//session Id, Role
 @Override
 public ResponseEntity<ResponseDTO<Map<String, String>>> secSession() {
 	// TODO Auto-generated method stub
@@ -144,17 +144,18 @@ public ResponseEntity<ResponseDTO<Map<String, String>>> secSession() {
 	
 	GrantedAuthority auth = iter.next();
 	String role = auth.getAuthority(); // 스프링 세션 롤
-    
-    if(!role.equals("ROLE_ADMIN") && !role.equals("ROLE_USER")) {
-    	throw new AuthenticationException("로그인 전");
-    }
+ 
+ if(!role.equals("ROLE_ADMIN") && !role.equals("ROLE_USER")) {
+ 	throw new AuthenticationException("로그인 전");
+ }
 	
 	Map<String, String> responseData = new HashMap<>();
-    responseData.put("id", id);
-    responseData.put("role", role);
+ responseData.put("id", id);
+ responseData.put("role", role);
 
-    
-    return new ResponseEntity<ResponseDTO<Map<String, String>>> (new ResponseDTO<>(responseData), HttpStatus.OK);
+ 
+ return new ResponseEntity<ResponseDTO<Map<String, String>>> (new ResponseDTO<>(responseData), HttpStatus.OK);
 }
+
 }
 

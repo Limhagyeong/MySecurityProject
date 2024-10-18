@@ -4,7 +4,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +21,7 @@ import com.hg.web.dto.member.UserDTO;
 import com.hg.web.dto.util.MailAuthDTO;
 import com.hg.web.service.member.MemberService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 

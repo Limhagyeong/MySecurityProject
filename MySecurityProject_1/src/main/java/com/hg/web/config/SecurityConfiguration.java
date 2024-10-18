@@ -8,15 +8,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
+
 
 import com.hg.web.common.handler.CustomAuthenticationFailureHandler;
-import com.hg.web.common.handler.GlobalExceptionHandler;
 
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -36,31 +33,23 @@ public class SecurityConfiguration{
 	public SecurityFilterChain filter(HttpSecurity http) throws Exception{
 		
 		// cors 관련 설정
-		http
-			.cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-			@Override
-			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-				// TODO Auto-generated method stub
-				CorsConfiguration configuration = new CorsConfiguration();
-				
-				configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));// 3000번 포트 허용
-				configuration.setAllowedMethods(Collections.singletonList("*"));// 모든메소드 허용
-				configuration.setAllowCredentials(true); // 세션쿠키 허용
-				configuration.setAllowedHeaders(Collections.singletonList("*"));
-
-				return configuration;
-			}
-		})));
+		http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+		    CorsConfiguration configuration = new CorsConfiguration();
+		    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000")); // 클라이언트 주소
+		    configuration.setAllowedMethods(Collections.singletonList("*")); // 필요한 메서드만 허용
+		    configuration.setAllowCredentials(true); // 쿠키, 인증 헤더 등의 자격 증명 허용
+		    
+		    return configuration;
+		}));
 		
 		 http
  		 	.csrf((auth) -> auth.disable());
 		
+		
 		// 접근 권한 설정
 		http 
 				.authorizeHttpRequests((auth)->auth
-						.requestMatchers("/api/loginProcess",
-										 "/api/members/**",
-										 "/api/mail/**").permitAll() // 회원가입, 로그인, 메일
+						.requestMatchers("/api","/api/members/**","/api/mail/**").permitAll() // 회원가입, 로그인, 메일
 						.anyRequest().authenticated() // 나머지는 권한이 필요함
 						)
 						
@@ -78,24 +67,23 @@ public class SecurityConfiguration{
 				
 		 http
          		 .formLogin((auth) -> auth
-         		 .loginPage("http://localhost:3000/login")
-                 .loginProcessingUrl("/api/loginProcess") 
+                 .loginProcessingUrl("/api/login")                  
+                 .defaultSuccessUrl("/api", true) 
                  .failureHandler(customerauthenticationfailirehandler) // 로그인 실패 시 예외처리
-                 .defaultSuccessUrl("http://localhost:3000/", true) 
                  .permitAll() 
+
          );
 		 
 	       http
 	 		.logout((auth) -> auth
 	 	    .logoutUrl("/api/logout")
-	 	    .logoutSuccessUrl("http://localhost:3000/")
+	 	    .logoutSuccessUrl("/api")
 	 	    .invalidateHttpSession(true) // 세션 무효화
 	 	    .deleteCookies("JSESSIONID") // 쿠키 삭제
 	    );
 	       
 	       
-	       
-	       
+	      
 		
 		return http.build();
 	}

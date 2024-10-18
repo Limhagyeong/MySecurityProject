@@ -70,7 +70,7 @@ public class PostController {
 	{
 		
 		PostInsertDTO postDTO=new PostInsertDTO();
-		if(img!=null&&!img.isEmpty()) {
+		if(img!=null&&!img.isEmpty()) { 
 			postDTO.setImg(img);
 		}
 		postDTO.setContent(content);

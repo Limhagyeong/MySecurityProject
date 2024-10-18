@@ -36,4 +36,5 @@ public class ResponseDTO<T> {
         this.message = message; // 전달할 메시지
         this.data = null; // 보낼 데이터는 없음 
     }
+
 }
