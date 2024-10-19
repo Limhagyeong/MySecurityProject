@@ -1,8 +1,7 @@
 package com.hg.web.dto.post;
 
 import java.time.LocalDateTime;
-
-import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 import lombok.Data;
 
@@ -13,6 +12,7 @@ public class PostSelectDTO {
 	private String username; // 작성자
 	private String content; 
 	private String imgUrl; // S3 URL
+	 private List<String> imgUrls;
 	private LocalDateTime date;
 	private int pImgNum; // 이미지 고유 번호
 }

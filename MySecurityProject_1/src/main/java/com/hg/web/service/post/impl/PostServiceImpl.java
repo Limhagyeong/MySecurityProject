@@ -146,11 +146,21 @@ public class PostServiceImpl implements PostService{
 	public ResponseEntity<ResponseDTO<List<PostSelectDTO>>> selectPost(String username) {
 		// TODO Auto-generated method stub
 		
+		// 게시물 get
 		List<PostSelectDTO> data=postingmapper.selectPost(username);
-		
+
+		 for (PostSelectDTO post : data) {
+		        String imgUrl=post.getImgUrl();
+		        if (imgUrl != null) {
+		            List<String> imgUrlList=Arrays.asList(imgUrl.split(","));
+		            post.setImgUrls(imgUrlList);
+		        } else {
+		            post.setImgUrls(new ArrayList<>());
+		        }
+		    }
 		return new ResponseEntity<ResponseDTO<List<PostSelectDTO>>> (new ResponseDTO<List<PostSelectDTO>>(data),HttpStatus.OK);
-	}
-	
+	 }
+
 	// 게시물 삭제
 	@Override
 	public ResponseEntity<ResponseDTO<Void>> deletePost(int pNum) {
