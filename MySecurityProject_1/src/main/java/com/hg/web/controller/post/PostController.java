@@ -31,7 +31,7 @@ public class PostController {
 	private final PostService postingService;
 	
 	@PostMapping
-	public ResponseEntity<ResponseDTO<Void>> post(@RequestParam(value="img", required = false) MultipartFile img, 
+	public ResponseEntity<ResponseDTO<Void>> post(@RequestParam(value="img", required = false) List<MultipartFile> img, 
 												  @RequestParam(value="content", required = false) String content,
 												  @RequestParam(value = "username", required = false) String username
 												  )
@@ -62,7 +62,7 @@ public class PostController {
 	}
 	
 	@PatchMapping("/{pNum}")
-	public ResponseEntity<ResponseDTO<Void>> updatePost(@RequestParam(value="img", required = false) MultipartFile img, 
+	public ResponseEntity<ResponseDTO<Void>> updatePost(@RequestParam(value="img", required = false) List<MultipartFile> img, 
 			  										    @RequestParam(value="content", required = false) String content,
 			  										    @RequestParam(value="pNum", required = false) int pNum,
 			  										    @RequestParam(value = "updated", required = false) String updated)

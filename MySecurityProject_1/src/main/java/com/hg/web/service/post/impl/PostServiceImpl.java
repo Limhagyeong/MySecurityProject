@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -44,34 +45,33 @@ public class PostServiceImpl implements PostService{
 		
 		int pNum=postDTO.getP_num();
 		
-		if(postingmapper.countPost(pNum) == 0) { // 게시물이 없다면 content DB 저장
+		if(postingmapper.countPost(pNum) == 0) { // 게시물이 없다면
 			try{
-				
 				postingmapper.insertContent(postDTO);
-				
 			}catch(Exception e) {
+				
 				throw new RuntimeException("DB 저장 실패: " + e.getMessage()); // 롤백
 			}
 			
-		}else { // 게시물이 있다면 기존 S3 객체 삭제
+		}else { // 게시물이 있다면
 			try {
 				
-				if("Y".equals(postDTO.getUpdated())) {
+				if("Y".equals(postDTO.getUpdated())) { // 이미지 업데이트 O => 기존 S3 객체 삭제
 					String imgUrl=postingmapper.S3imgUrl(pNum);
 					String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
 				    amazonS3.deleteObject(bucket, s3FileName);
 				}
 				
-				postingmapper.updatePost(postDTO);
+				postingmapper.updatePost(postDTO); // 내용 업데이트
 				
 			}catch(Exception e) {
-				throw new RuntimeException("S3 수정 실패: " + e.getMessage()); // 롤백
+				throw new RuntimeException("S3 삭제 실패: " + e.getMessage()); // 롤백
 			}
 		}
 
-		if("N".equals(postDTO.getUpdated())) {
+		if("N".equals(postDTO.getUpdated())) { // 이미지 업데이트 X
 			postingmapper.updatePost(postDTO);
-			return ResponseEntity.ok(new ResponseDTO<>(null));
+			return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 		
 			
 		}else {
 			return this.uploadImageToS3(postDTO); // S3 이미지 업로드
@@ -82,7 +82,11 @@ public class PostServiceImpl implements PostService{
 	
 	private ResponseEntity<ResponseDTO<Void>> uploadImageToS3(PostInsertDTO postDTO){
 		
-		String originalFilename=postDTO.getImg().getOriginalFilename();
+		List<MultipartFile> images=postDTO.getImg();
+		
+		for(MultipartFile img : images) {
+		
+		String originalFilename=img.getOriginalFilename();
 		String extension=originalFilename.substring(originalFilename.lastIndexOf(".")+1); // 확장자 추출
 
 		String s3FileName=UUID.randomUUID().toString().substring(0,10) + originalFilename; //  원본 파일명 유지 + 파일명 중복 방지
@@ -90,7 +94,7 @@ public class PostServiceImpl implements PostService{
 		 InputStream is = null; 
 		 
 		try {
-			is = postDTO.getImg().getInputStream(); // InputStream => 파일의 데이터를 한줄씩 바이트 단위로 읽어들임 (데이터에 접근하는
+			is = img.getInputStream(); // InputStream => 파일의 데이터를 한줄씩 바이트 단위로 읽어들임 (데이터에 접근하는
 																	// 방식)
 			byte[] bytes = IOUtils.toByteArray(is); // 바이트 배열을 통해 데이터를 메모리에 저장 (바이트 길이는 파일 크기와 동일)
 			
@@ -133,6 +137,7 @@ public class PostServiceImpl implements PostService{
 	            }
 	        }
 		}
+	}
 		return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 		
 	}
 
