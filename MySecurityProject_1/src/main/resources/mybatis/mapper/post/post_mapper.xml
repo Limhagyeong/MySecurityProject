@@ -36,7 +36,7 @@
  		   p.id AS id, 
  		   p.content AS content, 
  		   p.p_date AS date, 
- 		   pi.p_img_url AS imgUrl,
+ 		   GROUP_CONCAT(pi.p_img_url SEPARATOR ',') AS imgUrl,
  		   m.username AS username
  	FROM posting p
  	JOIN posting_img pi
@@ -44,6 +44,7 @@
  	JOIN myjoin m
  	ON m.id = p.id
 	WHERE username = #{username}
+	GROUP BY p.p_num, p.id, p.content, p.p_date, m.username
 	ORDER BY p.p_date DESC 
  </select>
 
