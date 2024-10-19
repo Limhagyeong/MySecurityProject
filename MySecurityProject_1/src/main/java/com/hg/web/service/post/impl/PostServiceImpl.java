@@ -46,7 +46,9 @@ public class PostServiceImpl implements PostService{
 		
 		if(postingmapper.countPost(pNum) == 0) { // 게시물이 없다면 content DB 저장
 			try{
+				
 				postingmapper.insertContent(postDTO);
+				
 			}catch(Exception e) {
 				throw new RuntimeException("DB 저장 실패: " + e.getMessage()); // 롤백
 			}
@@ -66,12 +68,21 @@ public class PostServiceImpl implements PostService{
 				throw new RuntimeException("S3 수정 실패: " + e.getMessage()); // 롤백
 			}
 		}
-		return this.uploadImageToS3(postDTO); // S3 이미지 업로드
+
+		if("N".equals(postDTO.getUpdated())) {
+			postingmapper.updatePost(postDTO);
+			return ResponseEntity.ok(new ResponseDTO<>(null));
+			
+		}else {
+			return this.uploadImageToS3(postDTO); // S3 이미지 업로드
+		}
+		
+		
 	}
 	
 	private ResponseEntity<ResponseDTO<Void>> uploadImageToS3(PostInsertDTO postDTO){
-    	
-    	String originalFilename=postDTO.getImg().getOriginalFilename();
+		
+		String originalFilename=postDTO.getImg().getOriginalFilename();
 		String extension=originalFilename.substring(originalFilename.lastIndexOf(".")+1); // 확장자 추출
 
 		String s3FileName=UUID.randomUUID().toString().substring(0,10) + originalFilename; //  원본 파일명 유지 + 파일명 중복 방지
