@@ -30,6 +30,11 @@ public class PostController {
 	
 	private final PostService postingService;
 	
+	@GetMapping("/allpost")
+	public ResponseEntity<ResponseDTO<List<PostSelectDTO>>> allpost(){
+		return postingService.allPost();
+	}
+	
 	@PostMapping
 	public ResponseEntity<ResponseDTO<Void>> post(@RequestParam(value="img", required = false) List<MultipartFile> img, 
 												  @RequestParam(value="content", required = false) String content,

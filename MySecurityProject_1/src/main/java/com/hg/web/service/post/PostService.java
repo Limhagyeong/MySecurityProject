@@ -18,4 +18,6 @@ public interface PostService {
 	ResponseEntity<ResponseDTO<List<PostSelectDTO>>> selectPost(String username);
 	// 게시물 삭제
 	ResponseEntity<ResponseDTO<Void>> deletePost(int pNum);
+	// 전체 게시물 출력
+	ResponseEntity<ResponseDTO<List<PostSelectDTO>>>  allPost();
 }

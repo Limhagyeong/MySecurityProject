@@ -5,6 +5,23 @@
  
  <mapper namespace="com.hg.web.mapper.post.PostMapper">
  
+ <select id="allPost" resultType="PostSelectDTO">
+ 	SELECT p.p_num AS pNum, 
+ 		   p.id AS id, 
+ 		   p.content AS content, 
+ 		   p.p_date AS date, 
+ 		   GROUP_CONCAT(pi.p_img_num SEPARATOR ',') AS pImgNum, 
+ 		   GROUP_CONCAT(pi.p_img_url SEPARATOR ',') AS imgUrl,
+ 		   m.username AS username
+ 	FROM posting p
+ 	JOIN posting_img pi
+ 	ON p.p_num = pi.p_num
+ 	JOIN myjoin m
+ 	ON m.id = p.id
+	GROUP BY p.p_num, p.id, p.content, p.p_date
+	ORDER BY p.p_date DESC 
+ </select>
+ 
  <!-- 게시물 존재 여부 확인 -->
  <select id="countPost" resultType="int" parameterType="int">
  	SELECT COUNT(*)

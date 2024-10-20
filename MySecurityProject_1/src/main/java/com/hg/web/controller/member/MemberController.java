@@ -1,5 +1,6 @@
 package com.hg.web.controller.member;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,7 @@ import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.common.exception.InternalErrorException;
 import com.hg.web.dto.api.ResponseDTO;
 import com.hg.web.dto.member.UserDTO;
+import com.hg.web.dto.post.PostSelectDTO;
 import com.hg.web.dto.util.MailAuthDTO;
 import com.hg.web.service.member.MemberService;
 

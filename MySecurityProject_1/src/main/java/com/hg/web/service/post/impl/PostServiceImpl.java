@@ -225,4 +225,23 @@ public class PostServiceImpl implements PostService{
 		}
 		return new ResponseEntity<ResponseDTO<Void>>(new ResponseDTO<>(), HttpStatus.OK); 
 	}
+
+	@Override
+	public ResponseEntity<ResponseDTO<List<PostSelectDTO>>> allPost() {
+		// TODO Auto-generated method stub
+		List<PostSelectDTO> data=postingmapper.allPost();
+		for (PostSelectDTO post : data) {
+	        String imgUrl=post.getImgUrl();
+	        String pImgNum=post.getPImgNum();
+	        if (imgUrl != null) {
+	            List<String> imgUrlList=Arrays.asList(imgUrl.split(","));
+	            List<String> pImgNumList=Arrays.asList(pImgNum.split(","));
+	            post.setImgUrls(imgUrlList);
+	            post.setPImgNumList(pImgNumList);
+	        } else {
+	            post.setImgUrls(new ArrayList<>());
+	        }
+	    }
+		return new ResponseEntity<ResponseDTO<List<PostSelectDTO>>> (new ResponseDTO<List<PostSelectDTO>>(data),HttpStatus.OK);
+	}
 }

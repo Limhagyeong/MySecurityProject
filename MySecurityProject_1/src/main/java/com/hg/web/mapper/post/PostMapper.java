@@ -30,4 +30,6 @@ public interface PostMapper {
 	void deleteImg(int pNum);
 	// 버킷 이미지 URL
 	List<String> S3imgUrl(int pNum);
+	// 전체 게시물
+	List<PostSelectDTO> allPost();
 }
