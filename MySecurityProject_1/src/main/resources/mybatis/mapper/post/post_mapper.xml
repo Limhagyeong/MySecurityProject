@@ -31,11 +31,12 @@
  </delete>
  
  <!-- 게시물 get -->
- <select id="selectPost" resultType="PostSelectDTO" parameterType="String">
+<select id="selectPost" resultType="PostSelectDTO" parameterType="String">
  	SELECT p.p_num AS pNum, 
  		   p.id AS id, 
  		   p.content AS content, 
  		   p.p_date AS date, 
+ 		   GROUP_CONCAT(pi.p_img_num SEPARATOR ',') AS pImgNum, 
  		   GROUP_CONCAT(pi.p_img_url SEPARATOR ',') AS imgUrl,
  		   m.username AS username
  	FROM posting p
@@ -57,10 +58,10 @@
  </update>
  
  <!-- 게시물 이미지 수정 -->
- <update id="updateImg" parameterType="PostInsertDTO">
+ <update id="updateImg" parameterType="ImgDTO">
  	UPDATE posting_img
- 	SET p_img_url = #{p_img_url}
- 	WHERE p_num = #{p_num}
+ 	SET p_img_url = #{pImgUrl}
+ 	WHERE p_img_num = #{pImgNum};
  </update>
  
  <!-- 게시물 삭제 -->
@@ -76,7 +77,7 @@
  </delete>
  
  <!-- imgurl get -->
- <select id="S3imgUrl" resultType="String" parameterType="int">
+ <select id="S3imgUrl" resultType="string" parameterType="int">
  	SELECT p_img_url AS imgUrl
  	FROM posting_img
  	WHERE p_num = #{pNum}

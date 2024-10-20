@@ -2,6 +2,7 @@ package com.hg.web.mapper.post;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.hg.web.dto.post.ImgDTO;
 import com.hg.web.dto.post.PostInsertDTO;
 import com.hg.web.dto.post.PostSelectDTO;
 
@@ -18,7 +19,7 @@ public interface PostMapper {
 	// 게시물 내용 update
 	void updatePost(PostInsertDTO postDTO);
 	// 게시물 이미지 update
-	void updateImg(PostInsertDTO postDTO);
+	void updateImg(ImgDTO imgDTO);
 	// 게시물 출력
 	List<PostSelectDTO> selectPost(String username);
 	// 이미지 삭제
@@ -28,5 +29,5 @@ public interface PostMapper {
 	// 게시물 이미지 삭제
 	void deleteImg(int pNum);
 	// 버킷 이미지 URL
-	String S3imgUrl(int pNum);
+	List<String> S3imgUrl(int pNum);
 }

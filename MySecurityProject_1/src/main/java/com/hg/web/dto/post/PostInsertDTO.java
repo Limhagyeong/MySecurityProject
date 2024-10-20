@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 public class PostInsertDTO {
 	private int p_num; // 게시물 고유 번호
+	private int p_img_num; // 게시물 고유 번호
+	private List<String> pImgNum;
 	private int id; // 작성자 아이디
 	private String username;
 	private String content; 

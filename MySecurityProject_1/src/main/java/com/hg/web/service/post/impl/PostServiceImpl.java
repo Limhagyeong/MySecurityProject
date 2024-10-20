@@ -17,6 +17,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.hg.web.common.exception.BadRequestException;
 import com.hg.web.dto.api.ResponseDTO;
+import com.hg.web.dto.post.ImgDTO;
 import com.hg.web.dto.post.PostInsertDTO;
 import com.hg.web.dto.post.PostSelectDTO;
 import com.hg.web.mapper.post.PostMapper;
@@ -57,9 +58,11 @@ public class PostServiceImpl implements PostService{
 			try {
 				
 				if("Y".equals(postDTO.getUpdated())) { // 이미지 업데이트 O => 기존 S3 객체 삭제
-					String imgUrl=postingmapper.S3imgUrl(pNum);
-					String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
-				    amazonS3.deleteObject(bucket, s3FileName);
+					List<String> imgUrls=postingmapper.S3imgUrl(pNum);
+					for(String imgUrl:imgUrls) {
+						String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+					    amazonS3.deleteObject(bucket, s3FileName);
+					}
 				}
 				
 				postingmapper.updatePost(postDTO); // 내용 업데이트
@@ -70,7 +73,6 @@ public class PostServiceImpl implements PostService{
 		}
 
 		if("N".equals(postDTO.getUpdated())) { // 이미지 업데이트 X
-			postingmapper.updatePost(postDTO);
 			return new ResponseEntity<ResponseDTO<Void>> (new ResponseDTO<>(),HttpStatus.OK); //성공 		
 			
 		}else {
@@ -83,15 +85,26 @@ public class PostServiceImpl implements PostService{
 	private ResponseEntity<ResponseDTO<Void>> uploadImageToS3(PostInsertDTO postDTO){
 		
 		List<MultipartFile> images=postDTO.getImg();
+		List<String> pImgNumList=postDTO.getPImgNum();
 		
-		for(MultipartFile img : images) {
+		// 게시물 번호 배열 int 변환
+		int[] postNum=new int[pImgNumList.size()];
 		
+	    for (int i=0; i<pImgNumList.size(); i++) 
+	    {
+	        postNum[i] = Integer.parseInt(pImgNumList.get(i).trim()); 
+	    }
+		
+		for(int i=0; i<images.size(); i++) {
+		
+	    MultipartFile img = images.get(i);
+			
 		String originalFilename=img.getOriginalFilename();
 		String extension=originalFilename.substring(originalFilename.lastIndexOf(".")+1); // 확장자 추출
 
 		String s3FileName=UUID.randomUUID().toString().substring(0,10) + originalFilename; //  원본 파일명 유지 + 파일명 중복 방지
 		
-		 InputStream is = null; 
+		InputStream is = null; 
 		 
 		try {
 			is = img.getInputStream(); // InputStream => 파일의 데이터를 한줄씩 바이트 단위로 읽어들임 (데이터에 접근하는
@@ -109,13 +122,19 @@ public class PostServiceImpl implements PostService{
 			
 			bucket=bucket.trim();
 			PutObjectRequest putObjectRequest=new PutObjectRequest(bucket, s3FileName, byteArrayInputStream, metaData);
+			System.out.println("se"+s3FileName);
 			amazonS3.putObject(putObjectRequest); // 이미지를 S3에 저장
 			
 			// 포스트 번호, 이미지 URL DB 저장
 			if("Y".equals(postDTO.getUpdated())) { // 수정 Update
 				// DB URL 업데이트
 				postDTO.setP_img_url(amazonS3.getUrl(bucket, s3FileName).toString());
-				postingmapper.updateImg(postDTO);
+				ImgDTO imgDTO = new ImgDTO();
+				imgDTO.setPImgNum(postNum[i]); // 각 이미지의 고유 ID
+				imgDTO.setPImgUrl(amazonS3.getUrl(bucket, s3FileName).toString());
+				
+		        postingmapper.updateImg(imgDTO); // 이미지 업데이트
+
 			}else { // 최초 Insert
 				postDTO.setP_num(postDTO.getP_num());
 				postDTO.setP_img_url(amazonS3.getUrl(bucket, s3FileName).toString());
@@ -151,9 +170,12 @@ public class PostServiceImpl implements PostService{
 
 		 for (PostSelectDTO post : data) {
 		        String imgUrl=post.getImgUrl();
+		        String pImgNum=post.getPImgNum();
 		        if (imgUrl != null) {
 		            List<String> imgUrlList=Arrays.asList(imgUrl.split(","));
+		            List<String> pImgNumList=Arrays.asList(pImgNum.split(","));
 		            post.setImgUrls(imgUrlList);
+		            post.setPImgNumList(pImgNumList);
 		        } else {
 		            post.setImgUrls(new ArrayList<>());
 		        }
@@ -167,11 +189,15 @@ public class PostServiceImpl implements PostService{
 		// TODO Auto-generated method stub
 		try {
 			// S3 버킷 이미지 삭제
-			String imgUrl=postingmapper.S3imgUrl(pNum);
-			if(imgUrl!=null) {
-				 String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
-		         amazonS3.deleteObject(bucket, s3FileName);
+			List<String> imgUrls = postingmapper.S3imgUrl(pNum);
+			
+			if(imgUrls!=null) {
+				for(String imgUrl : imgUrls) {
+					String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+					amazonS3.deleteObject(bucket, s3FileName);
+				}
 			}
+			
 			// DB 게시물 삭제
 			postingmapper.deleteContent(pNum);
 			// DB 이미지 삭제

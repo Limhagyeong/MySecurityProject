@@ -14,5 +14,6 @@ public class PostSelectDTO {
 	private String imgUrl; // S3 URL
 	 private List<String> imgUrls;
 	private LocalDateTime date;
-	private int pImgNum; // 이미지 고유 번호
+	private List<String> pImgNumList; // 이미지 고유 번호 리스트
+	private String pImgNum; // 이미지 고유 번호
 }

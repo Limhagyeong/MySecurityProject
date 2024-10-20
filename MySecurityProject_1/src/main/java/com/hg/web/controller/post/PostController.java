@@ -65,9 +65,11 @@ public class PostController {
 	public ResponseEntity<ResponseDTO<Void>> updatePost(@RequestParam(value="img", required = false) List<MultipartFile> img, 
 			  										    @RequestParam(value="content", required = false) String content,
 			  										    @RequestParam(value="pNum", required = false) int pNum,
-			  										    @RequestParam(value = "updated", required = false) String updated)
+			  										    @RequestParam(value = "updated", required = false) String updated,
+			  										    @RequestParam(value = "imgNum", required = false) List<String> imgNum)
 	
 	{
+		System.out.println("se"+imgNum);
 		
 		PostInsertDTO postDTO=new PostInsertDTO();
 		if(img!=null&&!img.isEmpty()) { 
@@ -76,6 +78,9 @@ public class PostController {
 		postDTO.setContent(content);
 		postDTO.setP_num(pNum);
 		postDTO.setUpdated(updated);
+		postDTO.setPImgNum(imgNum);
+		
+		
 		
 		return postingService.Posting(postDTO);
 	}
