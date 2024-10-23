@@ -138,7 +138,6 @@ public class PostServiceImpl implements PostService{
 				
 				bucket=bucket.trim();
 				PutObjectRequest putObjectRequest=new PutObjectRequest(bucket, s3FileName, byteArrayInputStream, metaData);
-				System.out.println("se"+s3FileName);
 				amazonS3.putObject(putObjectRequest); // 이미지를 S3에 저장
 				
 				// 포스트 번호, 이미지 URL DB 저장
