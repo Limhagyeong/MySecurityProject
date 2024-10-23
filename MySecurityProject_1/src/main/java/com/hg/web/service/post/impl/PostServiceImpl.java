@@ -3,6 +3,8 @@ package com.hg.web.service.post.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 import org.apache.commons.io.IOUtils;
@@ -209,8 +211,22 @@ public class PostServiceImpl implements PostService{
 			
 			if(imgUrls!=null) {
 				for(String imgUrl : imgUrls) {
+					
 					String s3FileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
-					amazonS3.deleteObject(bucket, s3FileName);
+					try {
+			            // URL 디코딩
+			            String decodedFileName = URLDecoder.decode(s3FileName, "UTF-8");
+			            
+			            // S3에서 파일 삭제
+			            amazonS3.deleteObject(bucket, decodedFileName);
+			        } catch (UnsupportedEncodingException e) {
+			        	
+			            System.out.println("지원되지 않는 인코딩 형식입니다: " + e.getMessage());
+			            
+			        } catch (IllegalArgumentException e) {
+			        	
+			            System.out.println("잘못된 인코딩 문자열입니다: " + e.getMessage());
+			        }
 				}
 			}
 			

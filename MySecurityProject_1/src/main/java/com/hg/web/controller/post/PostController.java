@@ -52,6 +52,7 @@ public class PostController {
 	
 	@DeleteMapping("/{pNum}")
 	public ResponseEntity<ResponseDTO<Void>> deletePost(@PathVariable int pNum){
+		
 		return postingService.deletePost(pNum);
 	}
 	
